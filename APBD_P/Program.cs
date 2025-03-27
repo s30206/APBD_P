@@ -2,10 +2,10 @@
 
 // Relative paths don't work for some reason
 // Skill issue I guess
-string inputPath = "D:\\СSProjects\\APBD_P1\\APBD_P1\\input.txt";
-string outputPath = "D:\\СSProjects\\APBD_P1\\APBD_P1\\output.txt";
+string inputPath = "D:\\СSProjects\\APBD_P\\APBD_P\\TextFiles\\input.txt";
+string outputPath = "D:\\СSProjects\\APBD_P\\APBD_P\\TextFiles\\output.txt";
 
-var manager = new DeviceManager(inputPath);
+IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(inputPath);
 manager.ShowAllDevices(); // 5 devices because 2 lines in the input file have wrong data
 
 Console.WriteLine("Smartwatch");

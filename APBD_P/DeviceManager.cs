@@ -1,8 +1,8 @@
 ﻿namespace APBD_P1;
 
-public class DeviceManager
+public class DeviceManager : IDeviceManager
 {
-    public List<Device> Devices { get; set; }
+    public List<IDevice> Devices { get; set; }
     public const int MaxDevices = 15;
 
     public DeviceManager(string FilePath) 
@@ -10,7 +10,7 @@ public class DeviceManager
         if (!File.Exists(FilePath))
             throw new FileNotFoundException("File not found", FilePath);
         
-        Devices = new List<Device>();
+        Devices = new List<IDevice>();
         
         foreach (var line in File.ReadLines(FilePath))
         {
@@ -63,7 +63,7 @@ public class DeviceManager
         }
     }
 
-    public void AddDevice(Device device)
+    public void AddDevice(IDevice device)
     {
         if (Devices.Contains(device) || Devices.Count >= MaxDevices) return;
         
@@ -77,7 +77,7 @@ public class DeviceManager
         }
     }
 
-    public void RemoveDevice(Device device)
+    public void RemoveDevice(IDevice device)
     {
         try
         {
@@ -89,7 +89,7 @@ public class DeviceManager
         }
     }
 
-    public void TurnOnDevice(Device device)
+    public void TurnOnDevice(IDevice device)
     {
         try
         {
@@ -101,7 +101,7 @@ public class DeviceManager
         }
     }
 
-    public void TurnOffDevice(Device device)
+    public void TurnOffDevice(IDevice device)
     {
         try
         {
@@ -119,7 +119,7 @@ public class DeviceManager
             Console.WriteLine(device.ToString());
     }
 
-    public void EditData(Device device, Device newDevice)
+    public void EditData(IDevice device, IDevice newDevice)
     {
         try
         {

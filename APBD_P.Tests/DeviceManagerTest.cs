@@ -8,13 +8,13 @@ namespace APBD_P1.Tests;
 [TestSubject(typeof(DeviceManager))]
 public class DeviceManagerTest
 {
-    private string _inputPath = "D:\\СSProjects\\APBD_P1\\APBD_P1.Tests\\inputTest.txt";
-    private string _outputPath = "D:\\СSProjects\\APBD_P1\\APBD_P1.Tests\\outputTest.txt";
+    private string _inputPath = "D:\\СSProjects\\APBD_P\\APBD_P.Tests\\inputTest.txt";
+    private string _outputPath = "D:\\СSProjects\\APBD_P\\APBD_P.Tests\\outputTest.txt";
     
     [Fact]
     public void TestConstructorMethod()
     {
-        DeviceManager manager = new DeviceManager(_inputPath);
+        IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(_inputPath);
         
         int expectedDeviceCount = 5;
         Assert.Equal(manager.Devices.Count, expectedDeviceCount);
@@ -23,7 +23,7 @@ public class DeviceManagerTest
     [Fact]
     public void TestTurnOnOffDeviceMethod()
     {
-        DeviceManager manager = new DeviceManager(_inputPath);
+        IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(_inputPath);
         
         manager.TurnOnDevice(manager.Devices[0]);
         Assert.True(manager.Devices[0].IsOn);
@@ -35,7 +35,7 @@ public class DeviceManagerTest
     [Fact]
     public void TestAddDeleteDeviceMethod()
     {
-        DeviceManager manager = new DeviceManager(_inputPath);
+        IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(_inputPath);
         
         int beforeCount = manager.Devices.Count;
         manager.AddDevice(manager.Devices[0]);
@@ -55,7 +55,7 @@ public class DeviceManagerTest
     [Fact]
     public void TestEditDeviceMethod()
     {
-        DeviceManager manager = new DeviceManager(_inputPath);
+        IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(_inputPath);
 
         Smartwatch manSw = (Smartwatch) manager.Devices[0];
         
@@ -82,7 +82,7 @@ public class DeviceManagerTest
     {
         File.WriteAllText(_outputPath, string.Empty);
         
-        DeviceManager manager = new DeviceManager(_inputPath);
+        IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(_inputPath);
         manager.SaveData(_outputPath);
         
         string[] lines = File.ReadAllLines(_outputPath);
