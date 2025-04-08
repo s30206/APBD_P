@@ -2,8 +2,11 @@
 
 public interface IDeviceManager : IDeviceModification
 {
-    List<IDevice> Devices { get; set; }
-    
+    List<Device> Devices { get; set; }
+
+    public Device? GetById(string id);
+    public bool RemoveDeviceById(string id);
+    public bool EditDataById(string id, Device newDevice);
     void SaveData(string filePath);
-    void ShowAllDevices();
+    string ReturnAllDevices();
 }

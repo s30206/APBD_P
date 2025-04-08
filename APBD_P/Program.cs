@@ -1,12 +1,10 @@
 ﻿using APBD_P1;
 
-// Relative paths don't work for some reason
-// Skill issue I guess
-string inputPath = "D:\\СSProjects\\APBD_P\\APBD_P\\TextFiles\\input.txt";
-string outputPath = "D:\\СSProjects\\APBD_P\\APBD_P\\TextFiles\\output.txt";
+string inputPath = "TextFiles\\input.txt";
+string outputPath = "TextFiles\\output.txt";
 
 IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(inputPath);
-manager.ShowAllDevices(); // 5 devices because 2 lines in the input file have wrong data
+Console.WriteLine(manager.ReturnAllDevices()); // 5 devices because 2 lines in the input file have wrong data
 
 Console.WriteLine("Smartwatch");
 manager.TurnOffDevice(manager.Devices[0]);

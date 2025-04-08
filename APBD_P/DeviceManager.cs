@@ -1,8 +1,10 @@
-﻿namespace APBD_P1;
+﻿using System.Text;
+
+namespace APBD_P1;
 
 public class DeviceManager : IDeviceManager
 {
-    public List<IDevice> Devices { get; set; }
+    public List<Device> Devices { get; set; }
     public const int MaxDevices = 15;
 
     public DeviceManager(string FilePath) 
@@ -10,7 +12,7 @@ public class DeviceManager : IDeviceManager
         if (!File.Exists(FilePath))
             throw new FileNotFoundException("File not found", FilePath);
         
-        Devices = new List<IDevice>();
+        Devices = new List<Device>();
         
         foreach (var line in File.ReadLines(FilePath))
         {
@@ -63,33 +65,37 @@ public class DeviceManager : IDeviceManager
         }
     }
 
-    public void AddDevice(IDevice device)
+    public bool AddDevice(Device device)
     {
-        if (Devices.Contains(device) || Devices.Count >= MaxDevices) return;
+        if (Devices.Contains(device) || Devices.Count >= MaxDevices) return false;
         
         try
         {
             Devices.Add(device);
+            return true;
         }
         catch (Exception e)
         {
             Console.WriteLine($"Error occured when adding a device: {e.Message}");
+            return false;
         }
     }
 
-    public void RemoveDevice(IDevice device)
+    public bool RemoveDevice(Device device)
     {
         try
         {
             Devices.Remove(device);
+            return true;
         }
         catch (Exception e)
         {
             Console.WriteLine($"Error occured when deleting a device: {e.Message}");
+            return false;
         }
     }
 
-    public void TurnOnDevice(IDevice device)
+    public void TurnOnDevice(Device device)
     {
         try
         {
@@ -101,7 +107,7 @@ public class DeviceManager : IDeviceManager
         }
     }
 
-    public void TurnOffDevice(IDevice device)
+    public void TurnOffDevice(Device device)
     {
         try
         {
@@ -113,13 +119,15 @@ public class DeviceManager : IDeviceManager
         }
     }
 
-    public void ShowAllDevices()
+    public string ReturnAllDevices()
     {
+        StringBuilder sb = new StringBuilder();
         foreach (var device in Devices) 
-            Console.WriteLine(device.ToString());
+            sb.Append(device);
+        return sb.ToString();
     }
 
-    public void EditData(IDevice device, IDevice newDevice)
+    public bool EditData(Device device, Device newDevice)
     {
         try
         {
@@ -128,25 +136,29 @@ public class DeviceManager : IDeviceManager
                 sw1.Name = sw2.Name;
                 sw1.IsOn = sw2.IsOn;
                 sw1.BatteryPercentage = sw2.BatteryPercentage;
+                return true;
             }
-            else if (device is PersonalComputer p1 && newDevice is PersonalComputer p2)
+            if (device is PersonalComputer p1 && newDevice is PersonalComputer p2)
             {
                 p1.Name = p2.Name;
                 p1.IsOn = p2.IsOn;
                 p1.OperatingSystem = p2.OperatingSystem;
+                return true;
             }
-            else if (device is EmbeddedDevice ed1 && newDevice is EmbeddedDevice ed2)
+            if (device is EmbeddedDevice ed1 && newDevice is EmbeddedDevice ed2)
             {
                 ed1.Name = ed2.Name;
                 ed1.IpAddress = ed2.IpAddress;
                 ed1.NetworkName = ed2.NetworkName;
+                return true;
             }
-            else 
-                throw new ArgumentException("The device type is not the same as the new device");
+            
+            throw new ArgumentException("The device type is not the same as the new device");
         }
         catch (Exception e)
         {
             Console.WriteLine($"Error occured when editing a device: {e.Message}");
+            return false;
         }
     }
 
@@ -180,6 +192,63 @@ public class DeviceManager : IDeviceManager
         catch (Exception e)
         {
             Console.WriteLine($"Error saving data: {e.Message}");
+        }
+    }
+
+    public void test()
+    {
+        foreach (var d in Devices)
+        {
+            Console.WriteLine(d.GetType().Name);
+        }
+    }
+
+    public Device? GetById(string id)
+    {
+        foreach (var d in Devices)
+        {
+            var split = id.Split('-');
+            var dType = getDeviceShortName(d.GetType().Name);
+            
+            if (dType.Equals(split[0]) && d.Id == Int32.Parse(split[1]))
+            {
+                return d;
+            }
+        }
+
+        return null;
+    }
+
+    public bool RemoveDeviceById(string id)
+    {
+        var device = GetById(id);
+        if (device == null) return false;
+        
+        Devices.Remove(device);
+        return true;
+    }
+
+    public bool EditDataById(string id, Device newDevice)
+    {
+        var device = GetById(id);
+        if (device == null) return false;
+        
+        EditData(newDevice, device);
+        return true;
+    }
+
+    private string? getDeviceShortName(string deviceName)
+    {
+        switch (deviceName)
+        {
+            case "Smartwatch":
+                return "SW";
+            case "PersonalComputer":
+                return "P";
+            case "EmbeddedDevice":
+                return "ED";
+            default:
+                return null;
         }
     }
 }
