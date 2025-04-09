@@ -8,8 +8,8 @@ namespace APBD_P1.Tests;
 [TestSubject(typeof(DeviceManager))]
 public class DeviceManagerTest
 {
-    private string _inputPath = "D:\\СSProjects\\APBD_P\\APBD_P.Tests\\inputTest.txt";
-    private string _outputPath = "D:\\СSProjects\\APBD_P\\APBD_P.Tests\\outputTest.txt";
+    private string _inputPath = "inputTest.txt";
+    private string _outputPath = "outputTest.txt";
     
     [Fact]
     public void TestConstructorMethod()

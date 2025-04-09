@@ -19,5 +19,14 @@
   <ItemGroup>
     <ProjectReference Include="..\APBD_P\APBD_P.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="inputTest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="outputTest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   
 </Project>
