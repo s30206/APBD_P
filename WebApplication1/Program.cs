@@ -1,4 +1,5 @@
 using APBD_P1;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -27,11 +28,10 @@ app.MapGet("/api/devices/{id}", (string id, IDeviceManager manager) =>
     return device is null ? Results.NotFound() : Results.Ok(device);
 });
 
-app.MapPost("/api/devices", (Device device, IDeviceManager manager) =>
+app.MapPost("/api/devices", ([FromBody] Device device, IDeviceManager manager) =>
 {
     try
     {
-        Console.WriteLine(device.Id);
         manager.AddDevice(device);
         return Results.Created($"/api/devices/{device.Id}", device);
     }
@@ -41,7 +41,7 @@ app.MapPost("/api/devices", (Device device, IDeviceManager manager) =>
     }
 });
 
-app.MapPut("/api/devices/{id}", (string id, Device newDevice, IDeviceManager manager) => manager.EditDataById(id, newDevice)
+app.MapPut("/api/devices/{id}", (string id, [FromBody] Device newDevice, IDeviceManager manager) => manager.EditDataById(id, newDevice)
     ? Results.Ok(manager.GetById(id))
     : Results.NotFound());
 
