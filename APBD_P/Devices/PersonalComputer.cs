@@ -4,11 +4,21 @@ public class PersonalComputer : Device
 {
     public string OperatingSystem { get; set; }
     
-    public override void TurnOn()
+    public void TurnOn()
     {
         if (string.IsNullOrEmpty(OperatingSystem))
             throw new Exception("EmptySystemException: No OS installed.");
         IsOn = true;
+    }
+
+    public PersonalComputer()
+    {
+        
+    }
+
+    public PersonalComputer(int Id, string Name, bool IsOn, string OperatingSystem) : base(Id, Name, IsOn)
+    {
+        OperatingSystem = OperatingSystem;
     }
 
     public override string ToString() =>

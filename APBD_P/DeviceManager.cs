@@ -233,8 +233,7 @@ public class DeviceManager : IDeviceManager
         var device = GetById(id);
         if (device == null) return false;
         
-        EditData(newDevice, device);
-        return true;
+        return EditData(newDevice, device);
     }
 
     private string? getDeviceShortName(string deviceName)

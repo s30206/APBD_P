@@ -21,7 +21,7 @@ public class Smartwatch : Device, IPowerNotifier
         Console.WriteLine($"Warning, SW-{Id} {Name} has low battery percentage: {_batteryPercentage}");
     }
 
-    public override void TurnOn()
+    public void TurnOn()
     {
         if (BatteryPercentage < 11)
             throw new Exception("EmptyBatteryException: Battery too low to turn on");
@@ -29,6 +29,16 @@ public class Smartwatch : Device, IPowerNotifier
             return;
         BatteryPercentage -= 10;
         IsOn = true;
+    }
+
+    public Smartwatch()
+    {
+        
+    }
+    
+    public Smartwatch(int Id, string Name, bool IsOn, int batteryPercentage) : base(Id, Name, IsOn)
+    {
+        BatteryPercentage = batteryPercentage;
     }
 
     public override string ToString() => $"Smartwatch: ID: {Id},\nName:{Name},\nBattery: {BatteryPercentage},\nIsOn:{IsOn}";

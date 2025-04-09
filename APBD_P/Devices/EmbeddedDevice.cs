@@ -26,12 +26,23 @@ public class EmbeddedDevice : Device
             throw new Exception("ConnectionException: Network Name must be MD Ltd.");
     }
 
-    public override void TurnOn()
+    public void TurnOn()
     {
         if (IsOn)
             return;
         Connect();
         IsOn = true;
+    }
+
+    public EmbeddedDevice()
+    {
+        
+    }
+
+    public EmbeddedDevice(int Id, string Name, bool IsOn, string IpAddress, string NetworkName) : base(Id, Name, IsOn)
+    {
+        IpAddress = IpAddress;
+        NetworkName = NetworkName;
     }
 
     public override string ToString() => 

@@ -27,12 +27,11 @@ app.MapGet("/api/devices/{id}", (string id, IDeviceManager manager) =>
     return device is null ? Results.NotFound() : Results.Ok(device);
 });
 
-// Deserialization problem
-// No idea how to fix :D
 app.MapPost("/api/devices", (Device device, IDeviceManager manager) =>
 {
     try
     {
+        Console.WriteLine(device.Id);
         manager.AddDevice(device);
         return Results.Created($"/api/devices/{device.Id}", device);
     }
@@ -42,8 +41,6 @@ app.MapPost("/api/devices", (Device device, IDeviceManager manager) =>
     }
 });
 
-// Deserialization problem
-// No idea how to fix :D
 app.MapPut("/api/devices/{id}", (string id, Device newDevice, IDeviceManager manager) => manager.EditDataById(id, newDevice)
     ? Results.Ok(manager.GetById(id))
     : Results.NotFound());
