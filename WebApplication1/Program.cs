@@ -8,7 +8,7 @@ builder.Services.AddSwaggerGen();
 
 string inputPath = "../APBD_P/TextFiles/input.txt";
 
-builder.Services.AddSingleton(DeviceManagerFactory.CreateDeviceManager(inputPath));
+IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(inputPath);
 
 var app = builder.Build();
 
@@ -20,16 +20,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/devices", (IDeviceManager manager) =>
+app.MapGet("/api/devices", () =>
     Results.Ok(manager.ReturnAllDevices()));
 
-app.MapGet("/api/devices/{id}", (string id, IDeviceManager manager) =>
+app.MapGet("/api/devices/{id}", (string id) =>
 {
     var device = manager.GetById(id);
     return device is null ? Results.NotFound() : Results.Ok(device);
 });
 
-app.MapPost("/api/devices", ([FromBody] DeviceTemplate device, IDeviceManager manager) =>
+app.MapPost("/api/devices", ([FromBody] DeviceTemplate device) =>
 {
     try
     {
@@ -80,7 +80,7 @@ app.MapPost("/api/devices", ([FromBody] DeviceTemplate device, IDeviceManager ma
     }
 });
 
-app.MapPut("/api/devices/{id}", (string id, [FromBody] DeviceTemplate newDevice, IDeviceManager manager) =>
+app.MapPut("/api/devices/{id}", (string id, [FromBody] DeviceTemplate newDevice) =>
 {
     Device d = null;
     switch (newDevice.Type)
@@ -125,7 +125,7 @@ app.MapPut("/api/devices/{id}", (string id, [FromBody] DeviceTemplate newDevice,
         : Results.NotFound();
 });
 
-app.MapDelete("/api/devices/{id}", (string id, IDeviceManager manager) => manager.RemoveDeviceById(id)
+app.MapDelete("/api/devices/{id}", (string id) => manager.RemoveDeviceById(id)
     ? Results.Ok()
     : Results.NotFound());
 
