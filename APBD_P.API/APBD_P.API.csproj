@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>WebApplication1</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,7 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\APBD_P\APBD_P.csproj" />
+      <ProjectReference Include="..\APBD_P.Console\APBD_P.Console.csproj" />
+      <ProjectReference Include="..\APBD_P.Source\APBD_P.Source.csproj" />
     </ItemGroup>
 
 </Project>

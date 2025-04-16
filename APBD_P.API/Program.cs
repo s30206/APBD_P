@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string inputPath = "../APBD_P/TextFiles/input.txt";
+string inputPath = "../APBD_P.Source/TextFiles/input.txt";
 
 IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(inputPath);
 
