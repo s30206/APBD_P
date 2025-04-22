@@ -902,8 +902,8 @@
     },
     "APBD_P.Source/1.0.0": {
       "type": "project",
-      "path": "../../APBD_P.Source/APBD_P.Source.csproj",
-      "msbuildProject": "../../APBD_P.Source/APBD_P.Source.csproj"
+      "path": "../../src/APBD_P.Source/APBD_P.Source.csproj",
+      "msbuildProject": "../../src/APBD_P.Source/APBD_P.Source.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -943,6 +943,9 @@
           "projectReferences": {
             "D:\\СSProjects\\APBD_P\\APBD_P.Source\\APBD_P.Source.csproj": {
               "projectPath": "D:\\СSProjects\\APBD_P\\APBD_P.Source\\APBD_P.Source.csproj"
+            },
+            "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\APBD_P.Source.csproj": {
+              "projectPath": "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\APBD_P.Source.csproj"
             }
           }
         }

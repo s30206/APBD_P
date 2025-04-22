@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\APBD_P.Source\APBD_P.Source.csproj" />
+    <ProjectReference Include="..\..\src\APBD_P.Source\APBD_P.Source.csproj" />
   </ItemGroup>
 
   <ItemGroup>
