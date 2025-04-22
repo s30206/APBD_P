@@ -1,0 +1,17 @@
+D:\СSProjects\APBD_P\APBD_P\bin\Debug\net8.0\APBD_P.exe
+D:\СSProjects\APBD_P\APBD_P\bin\Debug\net8.0\APBD_P.deps.json
+D:\СSProjects\APBD_P\APBD_P\bin\Debug\net8.0\APBD_P.runtimeconfig.json
+D:\СSProjects\APBD_P\APBD_P\bin\Debug\net8.0\APBD_P.dll
+D:\СSProjects\APBD_P\APBD_P\bin\Debug\net8.0\APBD_P.pdb
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\APBD_P.GeneratedMSBuildEditorConfig.editorconfig
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\APBD_P.AssemblyInfoInputs.cache
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\APBD_P.AssemblyInfo.cs
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\APBD_P.csproj.CoreCompileInputs.cache
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\APBD_P.dll
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\refint\APBD_P.dll
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\APBD_P.pdb
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\APBD_P.genruntimeconfig.cache
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\ref\APBD_P.dll
+D:\СSProjects\APBD_P\APBD_P\obj\Debug\net8.0\APBD_P.sourcelink.json
+D:\СSProjects\APBD_P\APBD_P\bin\Debug\net8.0\TextFiles\input.txt
+D:\СSProjects\APBD_P\APBD_P\bin\Debug\net8.0\TextFiles\output.txt
