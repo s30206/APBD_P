@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using APBD_P.Database;
 using APBD_P1;
 using Microsoft.AspNetCore.Mvc;
@@ -37,56 +39,108 @@ app.MapGet("/api/devices/{id}", (string id) =>
     return device is null ? Results.NotFound() : Results.Ok(device);
 });
 
-app.MapPost("/api/devices", ([FromBody] DeviceTemplate device) =>
-{
-    try
-    {
-        Device d = null;
-        switch (device.Type)
-        {
-            case "SW":
-                d = new Smartwatch
-                {
-                    Id = device.Id,
-                    Name = device.Name,
-                    IsOn = device.IsOn,
-                    BatteryPercentage = device.BatteryPercentage,
-                };
-                break;
-            case "P":
-                d = new PersonalComputer
-                {
-                    Id = device.Id,
-                    Name = device.Name,
-                    IsOn = device.IsOn,
-                    OperatingSystem = device.OperatingSystem
-                };
-                break;
-            case "ED":
-                d = new EmbeddedDevice
-                {
-                    Id = device.Id,
-                    Name = device.Name,
-                    IsOn = device.IsOn,
-                    IpAddress = device.IpAddress,
-                    NetworkName = device.NetworkName
-                };
-                break;
-        }
+// app.MapPost("/api/devices", ([FromBody] DeviceTemplate device) =>
+// {
+//     try
+//     {
+//         Device d = null;
+//         switch (device.Type)
+//         {
+//             case "SW":
+//                 d = new Smartwatch
+//                 {
+//                     Id = device.Id,
+//                     Name = device.Name,
+//                     IsOn = device.IsOn,
+//                     BatteryPercentage = device.BatteryPercentage,
+//                 };
+//                 break;
+//             case "P":
+//                 d = new PersonalComputer
+//                 {
+//                     Id = device.Id,
+//                     Name = device.Name,
+//                     IsOn = device.IsOn,
+//                     OperatingSystem = device.OperatingSystem
+//                 };
+//                 break;
+//             case "ED":
+//                 d = new EmbeddedDevice
+//                 {
+//                     Id = device.Id,
+//                     Name = device.Name,
+//                     IsOn = device.IsOn,
+//                     IpAddress = device.IpAddress,
+//                     NetworkName = device.NetworkName
+//                 };
+//                 break;
+//         }
+//
+//         if (d is null)
+//         {
+//             return Results.BadRequest();
+//         }
+//         
+//         manager.AddDevice(device);
+//         return Results.Created($"/api/devices/{device.Id}", d);
+//     }
+//     catch (Exception e)
+//     {
+//         return Results.BadRequest(e.Message);
+//     }
+// });
 
-        if (d is null)
-        {
-            return Results.BadRequest();
-        }
-        
-        manager.AddDevice(device);
-        return Results.Created($"/api/devices/{device.Id}", d);
-    }
-    catch (Exception e)
+app.MapPost("/api/devices/", async (HttpRequest request, IDeviceService deviceService) =>
+{
+    string? contentType = request.ContentType?.ToLower();
+
+    switch (contentType)
     {
-        return Results.BadRequest(e.Message);
+        case "application/json":
+        {
+            using var reader = new StreamReader(request.Body);
+            var rawJson = await reader.ReadToEndAsync();
+            
+            var json = JsonNode.Parse(rawJson);
+            
+            var type = json["type"];
+            
+            if (type == null)
+                return Results.BadRequest();
+            
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            switch (type.ToString())
+            {
+                case "EmbeddedDevice":
+                {
+                    EmbeddedDevice device = JsonSerializer.Deserialize<EmbeddedDevice>(json["typeValue"].ToString(), options);
+                    return deviceService.AddDevice(device) ? Results.Created("api/devices", device) : Results.BadRequest();
+                }
+                case "PersonalComputer":
+                {
+                    PersonalComputer device = JsonSerializer.Deserialize<PersonalComputer>(json["typeValue"].ToString(), options);
+                    return deviceService.AddDevice(device) ? Results.Created("api/devices", device) : Results.BadRequest();
+                }
+                case "Smartwatch":
+                {
+                    Smartwatch device = JsonSerializer.Deserialize<Smartwatch>(json["typeValue"].ToString(), options);
+                    return deviceService.AddDevice(device) ? Results.Created("api/devices", device) : Results.BadRequest();
+                }
+                default:
+                    return Results.BadRequest();
+            }
+        }
+        default:
+        {
+            return Results.Conflict();
+        }
     }
-});
+})
+    .Accepts<string>("application/json");
 
 app.MapPut("/api/devices/{id}", (string id, [FromBody] DeviceTemplate newDevice) =>
 {

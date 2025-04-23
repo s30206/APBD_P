@@ -88,4 +88,76 @@ public class DeviceService : IDeviceService
             return devices;
         }
     }
+
+    public bool AddDevice(Device device)
+    {
+        int countRows = -1;
+
+        switch (device.GetType().ToString())
+        {
+            case "EmbeddedDevice":
+            {
+                const string insertString = "insert into devices (Id, Name, IsOn, IpAddress, NetworkName) values (@Id, @Name, @IsOn, @IpAddress, @NetworkName)";
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    EmbeddedDevice dev = (EmbeddedDevice)device;
+
+                    SqlCommand command = new SqlCommand(insertString, connection);
+                    command.Parameters.AddWithValue("@Id", device.Id);
+                    command.Parameters.AddWithValue("@Name", device.Name);
+                    command.Parameters.AddWithValue("@IsOn", device.IsOn);
+                    command.Parameters.AddWithValue("@IpAddress", dev.IpAddress);
+                    command.Parameters.AddWithValue("@NetworkName", dev.NetworkName);
+
+                    connection.Open();
+                    
+                    countRows = command.ExecuteNonQuery();
+                }
+                break;
+            }
+            case "Smartwatch":
+            {
+                const string insertString = "insert into devices (Id, Name, IsOn, BatteryPercentage) values (@Id, @Name, @IsOn, @BatteryPercentage)";
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    Smartwatch dev = (Smartwatch)device;
+                    
+                    SqlCommand command = new SqlCommand(insertString, connection);
+                    command.Parameters.AddWithValue("@Id", dev.Id);
+                    command.Parameters.AddWithValue("@Name", dev.Name);
+                    command.Parameters.AddWithValue("@IsOn", dev.IsOn);
+                    command.Parameters.AddWithValue("@BatteryPercentage", dev.BatteryPercentage);
+                    
+                    connection.Open();
+                    
+                    countRows = command.ExecuteNonQuery();
+                }
+                break;
+            }
+            case "PersonalComputer":
+            {
+                const string insertString = "insert into devices (Id, Name, IsOn, OperatingSystem) values (@Id, @Name, @IsOn, @OperatingSystem)";
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    PersonalComputer dev = (PersonalComputer)device;
+                    
+                    SqlCommand command = new SqlCommand(insertString, connection);
+                    command.Parameters.AddWithValue("@Id", dev.Id);
+                    command.Parameters.AddWithValue("@Name", dev.Name);
+                    command.Parameters.AddWithValue("@IsOn", dev.IsOn);
+                    command.Parameters.AddWithValue("@OperatingSystem", dev.OperatingSystem);
+                    
+                    connection.Open();
+                    
+                    countRows = command.ExecuteNonQuery();
+                    break;
+                }
+            }
+        }
+
+        return countRows != -1;
+    }
 }
