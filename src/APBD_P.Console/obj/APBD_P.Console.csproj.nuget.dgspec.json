@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\СSProjects\\APBD_P\\src\\APBD_P.Console\\APBD_P.Console.csproj": {}
+    "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Console/APBD_P.Console.csproj": {}
   },
   "projects": {
-    "D:\\СSProjects\\APBD_P\\src\\APBD_P.Console\\APBD_P.Console.csproj": {
+    "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Console/APBD_P.Console.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\СSProjects\\APBD_P\\src\\APBD_P.Console\\APBD_P.Console.csproj",
+        "projectUniqueName": "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Console/APBD_P.Console.csproj",
         "projectName": "APBD_P.Console",
-        "projectPath": "D:\\СSProjects\\APBD_P\\src\\APBD_P.Console\\APBD_P.Console.csproj",
-        "packagesPath": "C:\\Users\\Юзер\\.nuget\\packages\\",
-        "outputPath": "D:\\СSProjects\\APBD_P\\src\\APBD_P.Console\\obj\\",
+        "projectPath": "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Console/APBD_P.Console.csproj",
+        "packagesPath": "/Users/s30206/.nuget/packages/",
+        "outputPath": "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Console/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Юзер\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/s30206/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\APBD_P.Source.csproj": {
-                "projectPath": "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\APBD_P.Source.csproj"
+              "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/APBD_P.Source.csproj": {
+                "projectPath": "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/APBD_P.Source.csproj"
               }
             }
           }
@@ -40,9 +40,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
+          "auditMode": "all"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -58,26 +58,40 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.11, 8.0.11]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-x64",
+              "version": "[8.0.11, 8.0.11]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.11, 8.0.11]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\Юзер\\.dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/Users/s30206/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\APBD_P.Source.csproj": {
+    "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/APBD_P.Source.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\APBD_P.Source.csproj",
+        "projectUniqueName": "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/APBD_P.Source.csproj",
         "projectName": "APBD_P.Source",
-        "projectPath": "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\APBD_P.Source.csproj",
-        "packagesPath": "C:\\Users\\Юзер\\.nuget\\packages\\",
-        "outputPath": "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\obj\\",
+        "projectPath": "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/APBD_P.Source.csproj",
+        "packagesPath": "/Users/s30206/.nuget/packages/",
+        "outputPath": "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Юзер\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/s30206/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -99,9 +113,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
+          "auditMode": "all"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -117,12 +131,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.11, 8.0.11]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-x64",
+              "version": "[8.0.11, 8.0.11]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.11, 8.0.11]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\Юзер\\.dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/Users/s30206/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

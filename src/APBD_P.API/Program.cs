@@ -1,3 +1,4 @@
+using APBD_P.Database;
 using APBD_P1;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1;
@@ -6,7 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string inputPath = "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\TextFiles\\input.txt";
+var connectionString = builder.Configuration.GetConnectionString("Database");
+
+builder.Services.AddSingleton<IDeviceService, DeviceService>(containerService => new DeviceService(connectionString));
+
+string inputPath = "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/TextFiles/input.txt";
 
 IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(inputPath);
 
@@ -20,8 +25,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/devices", () =>
-    Results.Ok(manager.ReturnAllDevices()));
+// app.MapGet("/api/devices", () =>
+//     Results.Ok(manager.ReturnAllDevices()));
+
+app.MapGet("/api/devices", (IDeviceService deviceService) =>
+    Results.Ok(deviceService.GetAllDevices()));
 
 app.MapGet("/api/devices/{id}", (string id) =>
 {
