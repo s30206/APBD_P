@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "WkBJaz0VwLZTGFoolEvJjElVpwm8pkSv645WAKVjEK8=",
+  "Hash": "MEPdGuromC0D6s8AlRvGvP5nglm+bIo4+H23WxmVwnQ=",
   "Source": "APBD_P.API",
   "BasePath": "_content/APBD_P.API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }

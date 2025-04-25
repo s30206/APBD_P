@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Ele4HjIfdtU=",
+  "dgSpecHash": "PnW4wBKt2LU=",
   "success": true,
-  "projectFilePath": "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/APBD_P.Source.csproj",
-  "expectedPackageFiles": [
-    "/Users/s30206/.nuget/packages/microsoft.netcore.app.ref/8.0.11/microsoft.netcore.app.ref.8.0.11.nupkg.sha512",
-    "/Users/s30206/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.11/microsoft.aspnetcore.app.ref.8.0.11.nupkg.sha512",
-    "/Users/s30206/.nuget/packages/microsoft.netcore.app.host.osx-x64/8.0.11/microsoft.netcore.app.host.osx-x64.8.0.11.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\s30206\\RiderProjects\\APBD_P\\src\\APBD_P.Source\\APBD_P.Source.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }
