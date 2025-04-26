@@ -1,3 +1,4 @@
+using APBD_P.Database.Parsers;
 using APBD_P1;
 using Microsoft.Data.SqlClient;
 
@@ -12,11 +13,11 @@ public class DeviceService : IDeviceService
         _connectionString = connectionString;
     }
 
-    public IEnumerable<Device> GetAllDevices()
+    public IEnumerable<DeviceDatabase> GetAllDevices()
     {
-        List<Device> devices = [];
+        List<DeviceDatabase> devices = [];
         
-        const string query = "SELECT * FROM Devices";
+        const string query = "SELECT * FROM Device";
 
         using (SqlConnection connection = new SqlConnection(_connectionString))
         {
@@ -30,51 +31,12 @@ public class DeviceService : IDeviceService
                 {
                     while (reader.Read())
                     {
-                        Device? device = null;
-                        switch (reader.FieldCount)
+                        var device = new DeviceDatabase()
                         {
-                            case 5:
-                            {
-                                device = new EmbeddedDevice()
-                                {
-                                    Id = reader.GetInt32(0),
-                                    Name = reader.GetString(1),
-                                    IsOn = reader.GetBoolean(2),
-                                    IpAddress = reader.GetString(3),
-                                    NetworkName = reader.GetString(4)
-                                };
-                                break;
-                            }
-                            case 4:
-                            {
-                                try
-                                {
-                                    device = new Smartwatch()
-                                    {
-                                        Id = reader.GetInt32(0),
-                                        Name = reader.GetString(1),
-                                        IsOn = reader.GetBoolean(2),
-                                        BatteryPercentage = reader.GetInt32(3)
-                                    };
-                                }
-                                catch (Exception e)
-                                {
-                                    device = new PersonalComputer()
-                                    {
-                                        Id = reader.GetInt32(0),
-                                        Name = reader.GetString(1),
-                                        IsOn = reader.GetBoolean(2),
-                                        OperatingSystem = reader.GetString(3)
-                                    };
-                                }
-
-                                break;
-                            }
-                            default:
-                            {
-                                throw new Exception("There is no such Device");
-                            }
-                        }
+                            ID = reader.GetString(0),
+                            Name = reader.GetString(1),
+                            IsOn = reader.GetBoolean(2)
+                        };
 
                         devices.Add(device);
                     }
@@ -89,15 +51,70 @@ public class DeviceService : IDeviceService
         }
     }
 
+    public Device? GetDeviceById(string id)
+    {
+        var devType = id.Split('-')[0] switch
+        {
+            "ED" => typeof(EmbeddedDevice),
+            "P" => typeof(PersonalComputer),
+            "SW" => typeof(Smartwatch),
+            _ => null
+        };
+        
+        if (devType == null) return null;
+
+        string query = $"SELECT * FROM Device JOIN {devType.Name} dev on Device.ID = dev.Device_ID WHERE Device.ID = @id";
+
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@id", id);
+            
+            SqlDataReader reader = command.ExecuteReader();
+
+            try
+            {
+                if (!reader.HasRows) return null;
+
+                reader.Read();
+
+                IDeviceParser? parser = null;
+                Device? device = null;
+
+                if (devType == typeof(EmbeddedDevice))
+                {
+                    parser = new EmbeddedDeviceParser();
+                }
+                else if (devType == typeof(PersonalComputer))
+                {
+                    parser = new PersonalComputerParser();
+                }
+                else if (devType == typeof(Smartwatch))
+                {
+                    parser = new SmartwatchParser();
+                }
+                
+                device = parser?.ParseDevice(reader);
+
+                return device;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+    }
+
     public bool AddDevice(Device device)
     {
         int countRows = -1;
 
-        switch (device.GetType().ToString())
+        /*switch (device.GetType().ToString())
         {
             case "EmbeddedDevice":
             {
-                const string insertString = "insert into devices (Id, Name, IsOn, IpAddress, NetworkName) values (@Id, @Name, @IsOn, @IpAddress, @NetworkName)";
+                const string insertString = "insert into device (Id, Name, IsOn, IpAddress, NetworkName) values (@Id, @Name, @IsOn, @IpAddress, @NetworkName)";
 
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
@@ -156,7 +173,7 @@ public class DeviceService : IDeviceService
                     break;
                 }
             }
-        }
+        }*/
 
         return countRows != -1;
     }

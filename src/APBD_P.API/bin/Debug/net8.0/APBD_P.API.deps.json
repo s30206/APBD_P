@@ -473,7 +473,7 @@
         },
         "runtime": {
           "APBD_P.Console.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
@@ -485,7 +485,7 @@
         },
         "runtime": {
           "APBD_P.Database.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
@@ -493,7 +493,7 @@
       "APBD_P.Source/1.0.0": {
         "runtime": {
           "APBD_P.Source.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }

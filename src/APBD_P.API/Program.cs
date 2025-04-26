@@ -13,7 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("Database");
 
 builder.Services.AddSingleton<IDeviceService, DeviceService>(containerService => new DeviceService(connectionString));
 
-string inputPath = "/Users/s30206/RiderProjects/APBD_P/src/APBD_P.Source/TextFiles/input.txt";
+string inputPath = "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\TextFiles\\input.txt";
 
 IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(inputPath);
 
@@ -33,10 +33,16 @@ app.UseHttpsRedirection();
 app.MapGet("/api/devices", (IDeviceService deviceService) =>
     Results.Ok(deviceService.GetAllDevices()));
 
-app.MapGet("/api/devices/{id}", (string id) =>
+/*app.MapGet("/api/devices/{id}", (string id) =>
 {
     var device = manager.GetById(id);
     return device is null ? Results.NotFound() : Results.Ok(device);
+});*/
+
+app.MapGet("/api/devices/{id}", (string id, IDeviceService deviceService) =>
+{
+    Device? dev = deviceService.GetDeviceById(id);
+    return dev == null ? Results.NotFound() : Results.Ok(dev);
 });
 
 // app.MapPost("/api/devices", ([FromBody] DeviceTemplate device) =>
