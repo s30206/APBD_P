@@ -30,9 +30,15 @@ public class PersonalComputerParser : IDeviceParser
         return JsonSerializer.Deserialize<PersonalComputer>(json.ToString(), _options);
     }
 
-    public Device? ParseTextDevice(string str)
+    public Device? ParseTextDevice(string[] parts)
     {
-        throw new NotImplementedException();
+        return new PersonalComputer()
+        {
+            Id = Int32.Parse(parts[0].Trim().Split("-")[1]),
+            Name = parts[1].Trim(),
+            IsOn = bool.Parse(parts[2].Trim()),
+            OperatingSystem = parts[3].Trim()
+        };
     }
 
     public bool InsertDevice(Device device, SqlConnection conn)

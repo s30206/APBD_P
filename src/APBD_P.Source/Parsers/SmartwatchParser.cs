@@ -31,11 +31,17 @@ public class SmartwatchParser : IDeviceParser
         return JsonSerializer.Deserialize<Smartwatch>(json.ToString(), _options);
     }
 
-    public Device? ParseTextDevice(string str)
+    public Device? ParseTextDevice(string[] parts)
     {
-        throw new NotImplementedException();
+        return new Smartwatch()
+        {
+            Id = Int32.Parse(parts[0].Trim().Split("-")[1]),
+            Name = parts[1].Trim(),
+            IsOn = bool.Parse(parts[2].Trim()),
+            BatteryPercentage = Int32.Parse(parts[3].Trim())
+        };
     }
-
+    
     public bool InsertDevice(Device device, SqlConnection conn)
     {
         Smartwatch dev = (Smartwatch)device;

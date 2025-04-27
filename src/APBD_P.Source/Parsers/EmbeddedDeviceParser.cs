@@ -31,9 +31,16 @@ public class EmbeddedDeviceParser : IDeviceParser
         return JsonSerializer.Deserialize<EmbeddedDevice>(json.ToString(), _options);
     }
 
-    public Device? ParseTextDevice(string str)
+    public Device? ParseTextDevice(string[] parts)
     {
-        throw new NotImplementedException();
+        return new EmbeddedDevice()
+        {
+            Id = Int32.Parse(parts[0].Trim().Split("-")[1]),
+            Name = parts[1].Trim(),
+            IsOn = bool.Parse(parts[2].Trim()),
+            IpAddress = parts[3].Trim(),
+            NetworkName = parts[4].Trim()
+        };
     }
 
     public bool InsertDevice(Device device, SqlConnection conn)

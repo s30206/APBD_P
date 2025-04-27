@@ -8,6 +8,6 @@ public interface IDeviceParser
 {
     Device ParseDevice(SqlDataReader reader);
     Device? ParseJsonDevice(JsonNode json);
-    Device? ParseTextDevice(string str);
+    Device? ParseTextDevice(string[] parts);
     bool InsertDevice(Device device, SqlConnection conn);
 }

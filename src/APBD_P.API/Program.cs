@@ -47,6 +47,14 @@ app.MapPut("api/devices", async (HttpRequest request, IDeviceService deviceServi
         {
             try
             {
+                /* Example
+                 * {
+                 *   "id": "SW-2",
+                 *   "name": "Test",
+                 *   "ison": true,
+                 *   "batterypercentage": 88
+                 * }
+                 */
                 var result = DeserializeJsonDevice(request);
 
                 if (result == null) return Results.BadRequest();
@@ -66,8 +74,11 @@ app.MapPut("api/devices", async (HttpRequest request, IDeviceService deviceServi
 
             try
             {
+                /* Example
+                 * SW-2, Test, true, 88
+                 */
                 var parts = text.Split(",");
-                IDeviceParser? parser = parts[0].Split(':')[0].Trim() switch
+                IDeviceParser? parser = parts[0].Trim().Split("-")[0] switch
                 {
                     "ED" => new EmbeddedDeviceParser(),
                     "P" => new PersonalComputerParser(),
@@ -77,7 +88,7 @@ app.MapPut("api/devices", async (HttpRequest request, IDeviceService deviceServi
                 
                 if (parser == null) return Results.BadRequest();
 
-                var result = parser.ParseTextDevice(text);
+                var result = parser.ParseTextDevice(parts);
                 
                 if (result == null) return Results.BadRequest();
                 
