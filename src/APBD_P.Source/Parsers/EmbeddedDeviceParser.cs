@@ -35,14 +35,8 @@ public class EmbeddedDeviceParser : IDeviceParser
     {
         EmbeddedDevice dev = (EmbeddedDevice)device;
         string query = "Insert into EmbeddedDevice (ID, Device_ID, IpAddress, NetworkName) values (@ID, @Device_ID, @IpAddress, @NetworkName)";
-        
-        string? shortName = dev.GetType().Name switch
-        {
-            nameof(EmbeddedDevice) => "ED",
-            nameof(PersonalComputer) => "P",
-            nameof(Smartwatch) => "SW",
-            _ => null
-        };
+
+        string? shortName = "ED";
 
         string queryMax = "select coalesce(max(id), 1) from EmbeddedDevice";
 

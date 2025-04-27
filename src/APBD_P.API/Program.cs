@@ -51,17 +51,18 @@ app.MapPut("api/devices", async (HttpRequest request, IDeviceService deviceServi
 
                 if (result == null) return Results.BadRequest();
 
-                deviceService.AddDevice(result);
-                return Results.Created("/api/devices/", result.Id);
+                
+                return deviceService.AddDevice(result) ? 
+                    Results.Created("/api/devices/", result.Id) : Results.BadRequest();
             }
             catch (Exception ex)
             {
-                return Results.BadRequest();
+                return Results.BadRequest(ex.Message);
             }
         }
         case "text/plain":
         {
-            break;
+            return Results.BadRequest();
         }
         default:
         {
