@@ -139,10 +139,35 @@ public class DeviceService : IDeviceService
         }
     }
 
-    public Device? UpdateDevice(string id, Device device)
+    public bool UpdateDevice(string id, Device device)
     {
-        throw new NotImplementedException();
-    }
+        string query = "UPDATE Device SET Name = @Name, IsOn = @IsOn WHERE ID = @ID";
+
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@ID", id);
+            command.Parameters.AddWithValue("@Name", device.Name);
+            command.Parameters.AddWithValue("@IsOn", device.IsOn);
+            
+            int rowsAffected = command.ExecuteNonQuery();
+            
+            if (rowsAffected == 0) return false;
+            
+            IDeviceParser? parser = device.GetType().Name switch
+            {
+                nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
+                nameof(PersonalComputer) => new PersonalComputerParser(),
+                nameof(Smartwatch) => new SmartwatchParser(),
+                _ => null
+            };
+            
+            if (parser == null) return false;
+            
+            return parser.UpdateDevice(id, device, connection);
+        }
+}
 
     public bool DeleteDevice(string id)
     {

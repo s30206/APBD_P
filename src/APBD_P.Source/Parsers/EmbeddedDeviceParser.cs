@@ -67,4 +67,19 @@ public class EmbeddedDeviceParser : IDeviceParser
         
         return rowsAffected != 0;
     }
+
+    public bool UpdateDevice(string id, Device device, SqlConnection conn)
+    {
+        EmbeddedDevice dev = (EmbeddedDevice)device;
+        string query = "UPDATE EmbeddedDevice set IpAddress = @IpAddress, NetworkName = @NetworkName WHERE Device_ID = @Id";
+        
+        var command = new SqlCommand(query, conn);
+        command.Parameters.AddWithValue("@Id", id);
+        command.Parameters.AddWithValue("@IpAddress", dev.IpAddress);
+        command.Parameters.AddWithValue("@NetworkName", dev.NetworkName);
+        
+        int rowsAffected = command.ExecuteNonQuery();
+        
+        return rowsAffected != 0;
+    }
 }

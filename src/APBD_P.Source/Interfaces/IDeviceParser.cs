@@ -10,4 +10,5 @@ public interface IDeviceParser
     Device? ParseJsonDevice(JsonNode json);
     Device? ParseTextDevice(string[] parts);
     bool InsertDevice(Device device, SqlConnection conn);
+    bool UpdateDevice(string id, Device device, SqlConnection conn);
 }

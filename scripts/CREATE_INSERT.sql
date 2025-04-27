@@ -58,7 +58,7 @@ INSERT INTO Device (ID, Name, IsOn) VALUES ('P-1', 'Dell Laptop', 0);
 INSERT INTO Device (ID, Name, IsOn) VALUES ('SW-1', 'Apple Watch', 1);
 
 INSERT INTO EmbeddedDevice (ID, Device_ID, IpAddress, NetworkName) VALUES
-    (1, 'ED-1', '192.168.1.10', 'HomeNetwork');
+    (1, 'ED-1', '192.168.1.10', 'MD Ltd.HomeNetwork');
 
 INSERT INTO PersonalComputer (ID, Device_ID, OperatingSystem) VALUES
     (1, 'P-1', 'Windows 11');

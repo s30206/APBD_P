@@ -64,4 +64,18 @@ public class PersonalComputerParser : IDeviceParser
         
         return rowsAffected != 0;
     }
+
+    public bool UpdateDevice(string id, Device device, SqlConnection conn)
+    {
+        PersonalComputer dev = (PersonalComputer)device;
+        string query = "UPDATE PersonalComputer SET OperatingSystem = @OperatingSystem WHERE Device_ID = @Id";
+        
+        var command = new SqlCommand(query, conn);
+        command.Parameters.AddWithValue("@Id", id);
+        command.Parameters.AddWithValue("@OperatingSystem", dev.OperatingSystem);
+        
+        int rowsAffected = command.ExecuteNonQuery();
+        
+        return rowsAffected != 0;
+    }
 }

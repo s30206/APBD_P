@@ -65,4 +65,18 @@ public class SmartwatchParser : IDeviceParser
         
         return rowsAffected != 0;
     }
+
+    public bool UpdateDevice(string id, Device device, SqlConnection conn)
+    {
+        Smartwatch dev = (Smartwatch)device;
+        string query = "UPDATE Smartwatch SET BatteryPercentage = @BatteryPercentage WHERE Device_ID = @Id";
+        
+        var command = new SqlCommand(query, conn);
+        command.Parameters.AddWithValue("@Id", id);
+        command.Parameters.AddWithValue("@BatteryPercentage", dev.BatteryPercentage);
+        
+        int rowsAffected = command.ExecuteNonQuery();
+        
+        return rowsAffected != 0;
+    }
 }
