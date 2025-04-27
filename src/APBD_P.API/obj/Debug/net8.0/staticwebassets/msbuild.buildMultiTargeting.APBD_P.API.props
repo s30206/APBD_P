@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\APBD_P.API.props" />
-</Project>
