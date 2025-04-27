@@ -30,13 +30,16 @@ public class PersonalComputerParser : IDeviceParser
         return JsonSerializer.Deserialize<PersonalComputer>(json.ToString(), _options);
     }
 
+    public Device? ParseTextDevice(string str)
+    {
+        throw new NotImplementedException();
+    }
+
     public bool InsertDevice(Device device, SqlConnection conn)
     {
         PersonalComputer dev = (PersonalComputer)device;
         string query = "Insert into PersonalComputer (ID, Device_ID, OperatingSystem) values (@ID, @Device_ID, @OperatingSystem)";
-
-        string? shortName = "P";
-
+        
         string queryMax = "select coalesce(max(id), 1) from PersonalComputer";
 
         var command = new SqlCommand(queryMax, conn);
@@ -44,7 +47,8 @@ public class PersonalComputerParser : IDeviceParser
         reader.Read();
         int maxId = reader.GetInt32(0);
         reader.Close();
-        
+
+        string shortName = "P";
         command = new SqlCommand(query, conn);
         command.Parameters.AddWithValue("@ID", maxId);
         command.Parameters.AddWithValue("@Device_ID", $"{shortName}-{dev.Id}");

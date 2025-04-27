@@ -31,13 +31,16 @@ public class EmbeddedDeviceParser : IDeviceParser
         return JsonSerializer.Deserialize<EmbeddedDevice>(json.ToString(), _options);
     }
 
+    public Device? ParseTextDevice(string str)
+    {
+        throw new NotImplementedException();
+    }
+
     public bool InsertDevice(Device device, SqlConnection conn)
     {
         EmbeddedDevice dev = (EmbeddedDevice)device;
         string query = "Insert into EmbeddedDevice (ID, Device_ID, IpAddress, NetworkName) values (@ID, @Device_ID, @IpAddress, @NetworkName)";
-
-        string? shortName = "ED";
-
+        
         string queryMax = "select coalesce(max(id), 1) from EmbeddedDevice";
 
         var command = new SqlCommand(queryMax, conn);
@@ -45,7 +48,8 @@ public class EmbeddedDeviceParser : IDeviceParser
         reader.Read();
         int maxId = reader.GetInt32(0);
         reader.Close();
-        
+
+        string shortName = "ED";
         command = new SqlCommand(query, conn);
         command.Parameters.AddWithValue("@ID", maxId);
         command.Parameters.AddWithValue("@Device_ID", $"{shortName}-{dev.Id}");

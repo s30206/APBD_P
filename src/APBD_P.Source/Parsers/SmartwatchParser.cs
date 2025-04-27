@@ -31,13 +31,16 @@ public class SmartwatchParser : IDeviceParser
         return JsonSerializer.Deserialize<Smartwatch>(json.ToString(), _options);
     }
 
+    public Device? ParseTextDevice(string str)
+    {
+        throw new NotImplementedException();
+    }
+
     public bool InsertDevice(Device device, SqlConnection conn)
     {
         Smartwatch dev = (Smartwatch)device;
         string query = "Insert into Smartwatch (ID, Device_ID, BatteryPercentage) values (@ID, @Device_ID, @BatteryPercentage)";
-
-        string? shortName = "SW";
-
+        
         string queryMax = "select coalesce(max(id), 1) from PersonalComputer";
 
         var command = new SqlCommand(queryMax, conn);
@@ -45,7 +48,8 @@ public class SmartwatchParser : IDeviceParser
         reader.Read();
         int maxId = reader.GetInt32(0);
         reader.Close();
-        
+
+        string shortName = "SW";
         command = new SqlCommand(query, conn);
         command.Parameters.AddWithValue("@ID", maxId);
         command.Parameters.AddWithValue("@Device_ID", $"{shortName}-{dev.Id}");

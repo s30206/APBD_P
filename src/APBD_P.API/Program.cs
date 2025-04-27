@@ -50,72 +50,51 @@ app.MapPut("api/devices", async (HttpRequest request, IDeviceService deviceServi
                 var result = DeserializeJsonDevice(request);
 
                 if (result == null) return Results.BadRequest();
-
                 
                 return deviceService.AddDevice(result) ? 
                     Results.Created("/api/devices/", result.Id) : Results.BadRequest();
             }
             catch (Exception ex)
             {
-                return Results.BadRequest(ex.Message);
+                return Results.BadRequest();
             }
         }
         case "text/plain":
         {
-            return Results.BadRequest();
+            StreamReader reader = new StreamReader(request.Body);
+            string text = await reader.ReadToEndAsync();
+
+            try
+            {
+                var parts = text.Split(",");
+                IDeviceParser? parser = parts[0].Split(':')[0].Trim() switch
+                {
+                    "ED" => new EmbeddedDeviceParser(),
+                    "P" => new PersonalComputerParser(),
+                    "SW" => new SmartwatchParser(),
+                    _ => null
+                };
+                
+                if (parser == null) return Results.BadRequest();
+
+                var result = parser.ParseTextDevice(text);
+                
+                if (result == null) return Results.BadRequest();
+                
+                return deviceService.AddDevice(result) ? 
+                    Results.Created("/api/devices/", result.Id) : Results.BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest();
+            }
         }
         default:
         {
             return Results.BadRequest();
         }
     }
-    return Results.Ok();
 }).Accepts<string>("application/json", ["text/plain"]);
-
-/*app.MapPut("/api/devices/{id}", (string id, [FromBody] DeviceTemplate newDevice) =>
-{
-    Device d = null;
-    switch (newDevice.Type)
-    {
-        case "SW":
-            d = new Smartwatch
-            {
-                Id = newDevice.Id,
-                Name = newDevice.Name,
-                IsOn = newDevice.IsOn,
-                BatteryPercentage = newDevice.BatteryPercentage,
-            };
-            break;
-        case "P":
-            d = new PersonalComputer
-            {
-                Id = newDevice.Id,
-                Name = newDevice.Name,
-                IsOn = newDevice.IsOn,
-                OperatingSystem = newDevice.OperatingSystem
-            };
-            break;
-        case "ED":
-            d = new EmbeddedDevice
-            {
-                Id = newDevice.Id,
-                Name = newDevice.Name,
-                IsOn = newDevice.IsOn,
-                IpAddress = newDevice.IpAddress,
-                NetworkName = newDevice.NetworkName
-            };
-            break;
-    }
-
-    if (d is null)
-    {
-        return Results.BadRequest();
-    }
-    
-    return manager.EditDataById(id, d)
-        ? Results.Ok(d)
-        : Results.NotFound();
-});*/
 
 app.MapDelete("/api/devices/{id}", (string id, IDeviceService deviceService) => 
     deviceService.DeleteDevice(id) ? Results.Ok() : Results.NotFound());
@@ -136,6 +115,5 @@ Device? DeserializeJsonDevice(HttpRequest request)
         _ => null
     };
 
-    if (parserJson == null) return null;
-    return parserJson.ParseJsonDevice(json);
+    return parserJson?.ParseJsonDevice(json);
 }
