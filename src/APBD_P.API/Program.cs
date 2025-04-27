@@ -34,7 +34,7 @@ app.MapGet("/api/devices", (IDeviceService deviceService) =>
     try
     {
         var devices = deviceService.GetAllDevices();
-        return devices.IsNullOrEmpty() ? Results.NotFound() : Results.Ok(deviceService.GetAllDevices());
+        return devices.IsNullOrEmpty() ? Results.NoContent() : Results.Ok(deviceService.GetAllDevices());
     }
     catch (Exception e)
     {
