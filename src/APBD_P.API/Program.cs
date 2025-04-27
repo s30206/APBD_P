@@ -55,7 +55,7 @@ app.MapGet("/api/devices/{id}", (string id, IDeviceService deviceService) =>
     }
 });
 
-app.MapPut("api/devices", async (HttpRequest request, IDeviceService deviceService) =>
+app.MapPost("api/devices", async (HttpRequest request, IDeviceService deviceService) =>
 {
     string? contentType = request.ContentType?.ToLower();
 
