@@ -4,6 +4,7 @@ using APBD_P.Source.DeviceService;
 using APBD_P.Source.Interfaces;
 using APBD_P.Source.Parsers;
 using APBD_P1;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -29,12 +30,29 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/api/devices", (IDeviceService deviceService) =>
-    Results.Ok(deviceService.GetAllDevices()));
+{
+    try
+    {
+        var devices = deviceService.GetAllDevices();
+        return devices.IsNullOrEmpty() ? Results.NotFound() : Results.Ok(deviceService.GetAllDevices());
+    }
+    catch (Exception e)
+    {
+        return Results.BadRequest(e);
+    }
+});
 
 app.MapGet("/api/devices/{id}", (string id, IDeviceService deviceService) =>
 {
-    Device? dev = deviceService.GetDeviceById(id);
-    return dev == null ? Results.NotFound() : Results.Ok(dev);
+    try
+    {
+        Device? dev = deviceService.GetDeviceById(id);
+        return dev == null ? Results.NotFound() : Results.Ok(dev);
+    }
+    catch (Exception e)
+    {
+        return Results.BadRequest(e);
+    }
 });
 
 app.MapPut("api/devices", async (HttpRequest request, IDeviceService deviceService) =>
@@ -189,8 +207,17 @@ app.MapPut("api/devices/{id}", async (string id, HttpRequest request, IDeviceSer
     }
 }).Accepts<string>("application/json", "text/plain");
 
-app.MapDelete("/api/devices/{id}", (string id, IDeviceService deviceService) => 
-    deviceService.DeleteDevice(id) ? Results.Ok() : Results.NotFound());
+app.MapDelete("/api/devices/{id}", (string id, IDeviceService deviceService) =>
+{
+    try
+    {
+        return deviceService.DeleteDevice(id) ? Results.Ok() : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(ex.Message);
+    }
+});
 
 app.Run();
 
