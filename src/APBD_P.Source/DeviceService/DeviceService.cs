@@ -20,7 +20,7 @@ public class DeviceService : IDeviceService
         
         const string query = "SELECT * FROM Device";
 
-        using (SqlConnection connection = new SqlConnection(_connectionString))
+        using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
             SqlCommand command = new SqlCommand(query, connection);
@@ -64,9 +64,9 @@ public class DeviceService : IDeviceService
         
         if (devType == null) return null;
 
-        string query = $"SELECT * FROM Device JOIN {devType.Name} dev on Device.ID = dev.Device_ID WHERE Device.ID = @id";
+        var query = $"SELECT * FROM Device JOIN {devType.Name} dev on Device.ID = dev.Device_ID WHERE Device.ID = @id";
 
-        using (SqlConnection connection = new SqlConnection(_connectionString))
+        using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
             SqlCommand command = new SqlCommand(query, connection);
@@ -81,7 +81,6 @@ public class DeviceService : IDeviceService
                 reader.Read();
 
                 IDeviceParser? parser = null;
-                Device? device = null;
 
                 if (devType == typeof(EmbeddedDevice))
                 {
@@ -175,5 +174,44 @@ public class DeviceService : IDeviceService
         }*/
 
         return countRows != -1;
+    }
+
+    public bool DeleteDevice(string id)
+    {
+        var devType = id.Split('-')[0] switch
+        {
+            "ED" => typeof(EmbeddedDevice),
+            "P" => typeof(PersonalComputer),
+            "SW" => typeof(Smartwatch),
+            _ => null
+        };
+        
+        if (devType == null) return false;
+
+        var queryDeriveDevice = $"DELETE {devType.Name} WHERE Device_ID = @id";
+        var queryDevice = "DELETE FROM Device WHERE ID = @id";
+
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            var command = new SqlCommand(queryDeriveDevice, connection);
+            command.Parameters.AddWithValue("@id", id);
+
+            try
+            {
+                var result = command.ExecuteNonQuery();
+
+                if (result == 0) return false;
+                
+                command = new SqlCommand(queryDevice, connection);
+                command.Parameters.AddWithValue("@id", id);
+                
+                return command.ExecuteNonQuery() > 0;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

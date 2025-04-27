@@ -53,10 +53,9 @@ ALTER TABLE Smartwatch ADD CONSTRAINT Table_4_Device
 
 -- End of file.
 
-INSERT INTO Device (ID, Name, IsOn) VALUES
-                                        ('ED-1', 'Raspberry Pi 4', 1),
-                                        ('P-1', 'Dell Laptop', 0),
-                                        ('SW-1', 'Apple Watch', 1);
+INSERT INTO Device (ID, Name, IsOn) VALUES ('ED-1', 'Raspberry Pi 4', 1);
+INSERT INTO Device (ID, Name, IsOn) VALUES ('P-1', 'Dell Laptop', 0);
+INSERT INTO Device (ID, Name, IsOn) VALUES ('SW-1', 'Apple Watch', 1);
 
 INSERT INTO EmbeddedDevice (ID, Device_ID, IpAddress, NetworkName) VALUES
     (1, 'ED-1', '192.168.1.10', 'HomeNetwork');

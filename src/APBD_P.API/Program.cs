@@ -27,17 +27,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// app.MapGet("/api/devices", () =>
-//     Results.Ok(manager.ReturnAllDevices()));
-
 app.MapGet("/api/devices", (IDeviceService deviceService) =>
     Results.Ok(deviceService.GetAllDevices()));
-
-/*app.MapGet("/api/devices/{id}", (string id) =>
-{
-    var device = manager.GetById(id);
-    return device is null ? Results.NotFound() : Results.Ok(device);
-});*/
 
 app.MapGet("/api/devices/{id}", (string id, IDeviceService deviceService) =>
 {
@@ -193,8 +184,7 @@ app.MapPut("/api/devices/{id}", (string id, [FromBody] DeviceTemplate newDevice)
         : Results.NotFound();
 });
 
-app.MapDelete("/api/devices/{id}", (string id) => manager.RemoveDeviceById(id)
-    ? Results.Ok()
-    : Results.NotFound());
+app.MapDelete("/api/devices/{id}", (string id, IDeviceService deviceService) => 
+    deviceService.DeleteDevice(id) ? Results.Ok() : Results.NotFound());
 
 app.Run();

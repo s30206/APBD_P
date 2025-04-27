@@ -7,5 +7,5 @@ public interface IDeviceService
     IEnumerable<DeviceDB> GetAllDevices();
     Device? GetDeviceById(string id);
     bool AddDevice(Device device);
-    
+    bool DeleteDevice(string id);
 }
