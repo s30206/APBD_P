@@ -191,12 +191,9 @@ C:\Users\s30206\RiderProjects\APBD_P\src\APBD_P.API\obj\Debug\net8.0\APBD_P.API.
 C:\Users\s30206\RiderProjects\APBD_P\src\APBD_P.API\obj\Debug\net8.0\APBD_P.API.genruntimeconfig.cache
 C:\Users\s30206\RiderProjects\APBD_P\src\APBD_P.API\obj\Debug\net8.0\ref\APBD_P.API.dll
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\appsettings.Development.json
-D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Database.deps.json
-D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Database.runtimeconfig.json
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Source.deps.json
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Source.runtimeconfig.json
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Source.exe
-D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Database.exe
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Console.deps.json
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Console.runtimeconfig.json
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Console.exe
@@ -259,9 +256,7 @@ D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\runtimes\win-x86\native\Mi
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Console.dll
-D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Database.dll
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Source.dll
-D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Database.pdb
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Console.pdb
 D:\СSProjects\APBD_P\src\APBD_P.API\bin\Debug\net8.0\APBD_P.Source.pdb
 D:\СSProjects\APBD_P\src\APBD_P.API\obj\Debug\net8.0\APBD_P.API.csproj.AssemblyReference.cache

@@ -1,8 +1,9 @@
 ﻿using System.IO;
+using APBD_P1;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace APBD_P1.Tests;
+namespace APBD_P.Tests;
 
 [TestSubject(typeof(DeviceManager))]
 public class DeviceManagerTest

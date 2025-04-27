@@ -1,7 +1,7 @@
 ﻿using APBD_P1;
 using Microsoft.Data.SqlClient;
 
-namespace APBD_P.Database.Parsers;
+namespace APBD_P.Source.Parsers;
 
 public interface IDeviceParser
 {

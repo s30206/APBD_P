@@ -1,4 +1,5 @@
 using APBD_P.Database.Parsers;
+using APBD_P.Source.Parsers;
 using APBD_P1;
 using Microsoft.Data.SqlClient;
 
@@ -13,9 +14,9 @@ public class DeviceService : IDeviceService
         _connectionString = connectionString;
     }
 
-    public IEnumerable<DeviceDatabase> GetAllDevices()
+    public IEnumerable<DeviceDB> GetAllDevices()
     {
-        List<DeviceDatabase> devices = [];
+        List<DeviceDB> devices = [];
         
         const string query = "SELECT * FROM Device";
 
@@ -31,7 +32,7 @@ public class DeviceService : IDeviceService
                 {
                     while (reader.Read())
                     {
-                        var device = new DeviceDatabase()
+                        var device = new DeviceDB
                         {
                             ID = reader.GetString(0),
                             Name = reader.GetString(1),
@@ -95,9 +96,7 @@ public class DeviceService : IDeviceService
                     parser = new SmartwatchParser();
                 }
                 
-                device = parser?.ParseDevice(reader);
-
-                return device;
+                return parser?.ParseDevice(reader);
             }
             finally
             {

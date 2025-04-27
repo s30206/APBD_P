@@ -9,7 +9,6 @@
       "APBD_P.API/1.0.0": {
         "dependencies": {
           "APBD_P.Console": "1.0.0",
-          "APBD_P.Database": "1.0.0",
           "APBD_P.Source": "1.0.0",
           "Microsoft.AspNetCore.OpenApi": "8.0.13",
           "Swashbuckle.AspNetCore": "6.6.2"
@@ -478,19 +477,10 @@
           }
         }
       },
-      "APBD_P.Database/1.0.0": {
+      "APBD_P.Source/1.0.0": {
         "dependencies": {
-          "APBD_P.Source": "1.0.0",
           "Microsoft.Data.SqlClient": "6.0.1"
         },
-        "runtime": {
-          "APBD_P.Database.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "APBD_P.Source/1.0.0": {
         "runtime": {
           "APBD_P.Source.dll": {
             "assemblyVersion": "1.0.0.0",
@@ -801,11 +791,6 @@
       "hashPath": "system.threading.tasks.extensions.4.5.4.nupkg.sha512"
     },
     "APBD_P.Console/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "APBD_P.Database/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

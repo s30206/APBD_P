@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\APBD_P.Database\APBD_P.Database.csproj" />
     <ProjectReference Include="..\..\src\APBD_P.Source\APBD_P.Source.csproj" />
     <ProjectReference Include="..\..\src\APBD_P.API\APBD_P.API.csproj" />
     <ProjectReference Include="..\..\src\APBD_P.Console\APBD_P.Console.csproj" />

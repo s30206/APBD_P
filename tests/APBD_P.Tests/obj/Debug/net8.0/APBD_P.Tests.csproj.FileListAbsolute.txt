@@ -460,3 +460,4 @@ D:\СSProjects\APBD_P\tests\APBD_P.Tests\bin\Debug\net8.0\APBD_P.Database.dll
 D:\СSProjects\APBD_P\tests\APBD_P.Tests\bin\Debug\net8.0\APBD_P.Database.pdb
 D:\СSProjects\APBD_P\tests\APBD_P.Tests\bin\Debug\net8.0\APBD_P.API.pdb
 D:\СSProjects\APBD_P\tests\APBD_P.Tests\bin\Debug\net8.0\APBD_P.Console.pdb
+D:\СSProjects\APBD_P\tests\APBD_P.Tests\bin\Debug\net8.0\appsettings.json
