@@ -106,36 +106,43 @@ public class DeviceService : IDeviceService
 
         using (var connection = new SqlConnection(_connectionString))
         {
-            connection.Open();
-            SqlCommand command = new SqlCommand(query, connection);
-
-            string? shortName = device.GetType().Name switch
+            try
             {
-                nameof(EmbeddedDevice) => "ED",
-                nameof(PersonalComputer) => "P",
-                nameof(Smartwatch) => "SW",
-                _ => null
-            };
-            
-            command.Parameters.AddWithValue("@ID", $"{shortName}-{device.Id}");
-            command.Parameters.AddWithValue("@Name", device.Name);
-            command.Parameters.AddWithValue("@IsOn", device.IsOn);
-            
-            int rowsAffected = command.ExecuteNonQuery();
-            
-            if (rowsAffected == 0) return false;
+                connection.Open();
+                SqlCommand command = new SqlCommand(query, connection);
 
-            IDeviceParser? parser = device.GetType().Name switch
+                string? shortName = device.GetType().Name switch
+                {
+                    nameof(EmbeddedDevice) => "ED",
+                    nameof(PersonalComputer) => "P",
+                    nameof(Smartwatch) => "SW",
+                    _ => null
+                };
+
+                command.Parameters.AddWithValue("@ID", $"{shortName}-{device.Id}");
+                command.Parameters.AddWithValue("@Name", device.Name);
+                command.Parameters.AddWithValue("@IsOn", device.IsOn);
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0) return false;
+
+                IDeviceParser? parser = device.GetType().Name switch
+                {
+                    nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
+                    nameof(PersonalComputer) => new PersonalComputerParser(),
+                    nameof(Smartwatch) => new SmartwatchParser(),
+                    _ => null
+                };
+
+                if (parser == null) return false;
+
+                return parser.InsertDevice(device, connection);
+            }
+            finally
             {
-                nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
-                nameof(PersonalComputer) => new PersonalComputerParser(),
-                nameof(Smartwatch) => new SmartwatchParser(),
-                _ => null
-            };
-            
-            if (parser == null) return false;
-            
-            return parser.InsertDevice(device, connection);
+                connection.Close();
+            }
         }
     }
 
@@ -145,29 +152,36 @@ public class DeviceService : IDeviceService
 
         using (var connection = new SqlConnection(_connectionString))
         {
-            connection.Open();
-            SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@ID", id);
-            command.Parameters.AddWithValue("@Name", device.Name);
-            command.Parameters.AddWithValue("@IsOn", device.IsOn);
-            
-            int rowsAffected = command.ExecuteNonQuery();
-            
-            if (rowsAffected == 0) return false;
-            
-            IDeviceParser? parser = device.GetType().Name switch
+            try
             {
-                nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
-                nameof(PersonalComputer) => new PersonalComputerParser(),
-                nameof(Smartwatch) => new SmartwatchParser(),
-                _ => null
-            };
-            
-            if (parser == null) return false;
-            
-            return parser.UpdateDevice(id, device, connection);
+                connection.Open();
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@ID", id);
+                command.Parameters.AddWithValue("@Name", device.Name);
+                command.Parameters.AddWithValue("@IsOn", device.IsOn);
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0) return false;
+
+                IDeviceParser? parser = device.GetType().Name switch
+                {
+                    nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
+                    nameof(PersonalComputer) => new PersonalComputerParser(),
+                    nameof(Smartwatch) => new SmartwatchParser(),
+                    _ => null
+                };
+
+                if (parser == null) return false;
+
+                return parser.UpdateDevice(id, device, connection);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
-}
+    }
 
     public bool DeleteDevice(string id)
     {
