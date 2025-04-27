@@ -1,9 +1,18 @@
-using APBD_P.Database;
+using System.Text.Json.Nodes;
+using APBD_P.Database.Parsers;
+using APBD_P.Source.DeviceService;
+using APBD_P.Source.Interfaces;
+using APBD_P.Source.Parsers;
 using APBD_P1;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AllowSynchronousIO = true;
+});
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 
@@ -27,6 +36,40 @@ app.MapGet("/api/devices/{id}", (string id, IDeviceService deviceService) =>
     Device? dev = deviceService.GetDeviceById(id);
     return dev == null ? Results.NotFound() : Results.Ok(dev);
 });
+
+app.MapPut("api/devices", async (HttpRequest request, IDeviceService deviceService) =>
+{
+    string? contentType = request.ContentType?.ToString();
+
+    switch (contentType)
+    {
+        case "application/json":
+        {
+            try
+            {
+                var result = DeserializeJsonDevice(request);
+
+                if (result == null) return Results.BadRequest();
+
+                deviceService.AddDevice(result);
+                return Results.Created("/api/devices/", result.Id);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest();
+            }
+        }
+        case "text/plain":
+        {
+            break;
+        }
+        default:
+        {
+            return Results.BadRequest();
+        }
+    }
+    return Results.Ok();
+}).Accepts<string>("application/json", ["text/plain"]);
 
 /*app.MapPut("/api/devices/{id}", (string id, [FromBody] DeviceTemplate newDevice) =>
 {
@@ -77,3 +120,21 @@ app.MapDelete("/api/devices/{id}", (string id, IDeviceService deviceService) =>
     deviceService.DeleteDevice(id) ? Results.Ok() : Results.NotFound());
 
 app.Run();
+
+Device? DeserializeJsonDevice(HttpRequest request)
+{
+    using var reader = new StreamReader(request.Body);
+    string rawJson = reader.ReadToEnd();
+    var json = JsonNode.Parse(rawJson);
+
+    IDeviceParser? parserJson = json["id"].ToString().Split("-")[0] switch
+    {
+        "ED" => new EmbeddedDeviceParser(),
+        "P" => new PersonalComputerParser(),
+        "SW" => new SmartwatchParser(),
+        _ => null
+    };
+
+    if (parserJson == null) return null;
+    return parserJson.ParseJsonDevice(json);
+}

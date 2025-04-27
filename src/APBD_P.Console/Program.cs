@@ -1,8 +1,7 @@
 ﻿using APBD_P1;
 
-// Relative paths work in API but not here. No idea why :D
-string inputPath = "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\TextFiles\\input.txt";
-string outputPath = "D:\\СSProjects\\APBD_P\\src\\APBD_P.Source\\TextFiles\\output.txt";
+string inputPath = "TextFiles\\input.txt";
+string outputPath = "TextFiles\\output.txt";
 
 IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(inputPath);
 Console.WriteLine(manager.ReturnAllDevices()); // 5 devices because 2 lines in the input file have wrong data

@@ -1,6 +1,6 @@
 ﻿namespace APBD_P1;
 
-public class Device
+public abstract class Device
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -18,11 +18,8 @@ public class Device
         this.IsOn = IsOn;
     }
 
-    public void TurnOn() => IsOn = true;
+    public abstract void TurnOn();
     public void TurnOff() => IsOn = false;
 
-    public override string ToString()
-    {
-        return $"Id: {Id}, Name: {Name}, IsOn: {IsOn}";
-    }
+    public abstract override string ToString();
 }

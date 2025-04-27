@@ -1,6 +1,6 @@
 using APBD_P1;
 
-namespace APBD_P.Database;
+namespace APBD_P.Source.Interfaces;
 
 public interface IDeviceService
 {

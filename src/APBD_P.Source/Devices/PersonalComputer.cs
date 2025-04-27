@@ -4,7 +4,7 @@ public class PersonalComputer : Device
 {
     public string OperatingSystem { get; set; }
     
-    public void TurnOn()
+    public override void TurnOn()
     {
         if (string.IsNullOrEmpty(OperatingSystem))
             throw new Exception("EmptySystemException: No OS installed.");

@@ -26,7 +26,7 @@ public class EmbeddedDevice : Device
             throw new Exception("ConnectionException: Network Name must be MD Ltd.");
     }
 
-    public void TurnOn()
+    public override void TurnOn()
     {
         if (IsOn)
             return;

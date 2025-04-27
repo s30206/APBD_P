@@ -1,4 +1,6 @@
-﻿using APBD_P.Source.Parsers;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using APBD_P.Source.Parsers;
 using APBD_P1;
 using Microsoft.Data.SqlClient;
 
@@ -6,6 +8,11 @@ namespace APBD_P.Database.Parsers;
 
 public class PersonalComputerParser : IDeviceParser
 {
+    protected JsonSerializerOptions _options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true,
+    };
+    
     public Device ParseDevice(SqlDataReader reader)
     {
         return new PersonalComputer
@@ -15,5 +22,16 @@ public class PersonalComputerParser : IDeviceParser
             IsOn = reader.GetBoolean(2),
             OperatingSystem = reader.GetString(5)
         };
+    }
+
+    public Device? ParseJsonDevice(JsonNode json)
+    {        
+        json["id"] = Int32.Parse(json["id"]?.ToString().Split("-")[1]);
+        return JsonSerializer.Deserialize<Smartwatch>(json.ToString(), _options);
+    }
+
+    public bool InsertDevice(Device device, SqlConnection conn)
+    {
+        throw new NotImplementedException();
     }
 }
