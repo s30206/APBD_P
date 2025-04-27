@@ -7,7 +7,7 @@ namespace APBD_P.Database;
 
 public class DeviceService : IDeviceService
 {
-    private string _connectionString;
+    private readonly string _connectionString;
 
     public DeviceService(string connectionString)
     {
@@ -56,15 +56,15 @@ public class DeviceService : IDeviceService
     {
         var devType = id.Split('-')[0] switch
         {
-            "ED" => typeof(EmbeddedDevice),
-            "P" => typeof(PersonalComputer),
-            "SW" => typeof(Smartwatch),
+            "ED" => nameof(EmbeddedDevice),
+            "P" => nameof(PersonalComputer),
+            "SW" => nameof(Smartwatch),
             _ => null
         };
         
         if (devType == null) return null;
 
-        var query = $"SELECT * FROM Device JOIN {devType.Name} dev on Device.ID = dev.Device_ID WHERE Device.ID = @id";
+        var query = $"SELECT * FROM Device JOIN {devType} d on Device.ID = d.Device_ID WHERE Device.ID = @id";
 
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -80,20 +80,13 @@ public class DeviceService : IDeviceService
 
                 reader.Read();
 
-                IDeviceParser? parser = null;
-
-                if (devType == typeof(EmbeddedDevice))
+                IDeviceParser? parser = devType switch
                 {
-                    parser = new EmbeddedDeviceParser();
-                }
-                else if (devType == typeof(PersonalComputer))
-                {
-                    parser = new PersonalComputerParser();
-                }
-                else if (devType == typeof(Smartwatch))
-                {
-                    parser = new SmartwatchParser();
-                }
+                    nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
+                    nameof(PersonalComputer) => new PersonalComputerParser(),
+                    nameof(Smartwatch) => new SmartwatchParser(),
+                    _ => null
+                };
                 
                 return parser?.ParseDevice(reader);
             }
@@ -106,89 +99,27 @@ public class DeviceService : IDeviceService
 
     public bool AddDevice(Device device)
     {
-        int countRows = -1;
+        throw new NotImplementedException();
+    }
 
-        /*switch (device.GetType().ToString())
-        {
-            case "EmbeddedDevice":
-            {
-                const string insertString = "insert into device (Id, Name, IsOn, IpAddress, NetworkName) values (@Id, @Name, @IsOn, @IpAddress, @NetworkName)";
-
-                using (SqlConnection connection = new SqlConnection(_connectionString))
-                {
-                    EmbeddedDevice dev = (EmbeddedDevice)device;
-
-                    SqlCommand command = new SqlCommand(insertString, connection);
-                    command.Parameters.AddWithValue("@Id", device.Id);
-                    command.Parameters.AddWithValue("@Name", device.Name);
-                    command.Parameters.AddWithValue("@IsOn", device.IsOn);
-                    command.Parameters.AddWithValue("@IpAddress", dev.IpAddress);
-                    command.Parameters.AddWithValue("@NetworkName", dev.NetworkName);
-
-                    connection.Open();
-                    
-                    countRows = command.ExecuteNonQuery();
-                }
-                break;
-            }
-            case "Smartwatch":
-            {
-                const string insertString = "insert into devices (Id, Name, IsOn, BatteryPercentage) values (@Id, @Name, @IsOn, @BatteryPercentage)";
-
-                using (SqlConnection connection = new SqlConnection(_connectionString))
-                {
-                    Smartwatch dev = (Smartwatch)device;
-                    
-                    SqlCommand command = new SqlCommand(insertString, connection);
-                    command.Parameters.AddWithValue("@Id", dev.Id);
-                    command.Parameters.AddWithValue("@Name", dev.Name);
-                    command.Parameters.AddWithValue("@IsOn", dev.IsOn);
-                    command.Parameters.AddWithValue("@BatteryPercentage", dev.BatteryPercentage);
-                    
-                    connection.Open();
-                    
-                    countRows = command.ExecuteNonQuery();
-                }
-                break;
-            }
-            case "PersonalComputer":
-            {
-                const string insertString = "insert into devices (Id, Name, IsOn, OperatingSystem) values (@Id, @Name, @IsOn, @OperatingSystem)";
-
-                using (SqlConnection connection = new SqlConnection(_connectionString))
-                {
-                    PersonalComputer dev = (PersonalComputer)device;
-                    
-                    SqlCommand command = new SqlCommand(insertString, connection);
-                    command.Parameters.AddWithValue("@Id", dev.Id);
-                    command.Parameters.AddWithValue("@Name", dev.Name);
-                    command.Parameters.AddWithValue("@IsOn", dev.IsOn);
-                    command.Parameters.AddWithValue("@OperatingSystem", dev.OperatingSystem);
-                    
-                    connection.Open();
-                    
-                    countRows = command.ExecuteNonQuery();
-                    break;
-                }
-            }
-        }*/
-
-        return countRows != -1;
+    public Device? UpdateDevice(string id, Device device)
+    {
+        throw new NotImplementedException();
     }
 
     public bool DeleteDevice(string id)
     {
         var devType = id.Split('-')[0] switch
         {
-            "ED" => typeof(EmbeddedDevice),
-            "P" => typeof(PersonalComputer),
-            "SW" => typeof(Smartwatch),
+            "ED" => nameof(EmbeddedDevice),
+            "P" => nameof(PersonalComputer),
+            "SW" => nameof(Smartwatch),
             _ => null
         };
         
         if (devType == null) return false;
 
-        var queryDeriveDevice = $"DELETE {devType.Name} WHERE Device_ID = @id";
+        var queryDeriveDevice = $"DELETE {devType} WHERE Device_ID = @id";
         var queryDevice = "DELETE FROM Device WHERE ID = @id";
 
         using (var connection = new SqlConnection(_connectionString))
