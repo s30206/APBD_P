@@ -15,7 +15,7 @@ public class DeviceService : IDeviceService
         _connectionString = connectionString;
     }
 
-    public IEnumerable<DeviceDB> GetAllDevices()
+    public List<DeviceDB> GetAllDevices()
     {
         List<DeviceDB> devices = [];
         
