@@ -106,10 +106,11 @@ public class DeviceService : IDeviceService
 
         using (var connection = new SqlConnection(_connectionString))
         {
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
             try
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand(query, connection);
+                SqlCommand command = new SqlCommand(query, connection, transaction);
 
                 string? shortName = device.GetType().Name switch
                 {
@@ -123,9 +124,7 @@ public class DeviceService : IDeviceService
                 command.Parameters.AddWithValue("@Name", device.Name);
                 command.Parameters.AddWithValue("@IsOn", device.IsOn);
 
-                int rowsAffected = command.ExecuteNonQuery();
-
-                if (rowsAffected == 0) return false;
+                if (command.ExecuteNonQuery() == 0) throw new Exception("Failed to add device");
 
                 IDeviceParser? parser = device.GetType().Name switch
                 {
@@ -135,9 +134,16 @@ public class DeviceService : IDeviceService
                     _ => null
                 };
 
-                if (parser == null) return false;
-
-                return parser.InsertDevice(device, connection);
+                if (parser == null || !parser.InsertDevice(device, connection, transaction))
+                    throw new Exception("Failed to add device");
+                
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw;
             }
             finally
             {
@@ -152,17 +158,17 @@ public class DeviceService : IDeviceService
 
         using (var connection = new SqlConnection(_connectionString))
         {
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            
             try
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand(query, connection);
+                SqlCommand command = new SqlCommand(query, connection, transaction);
                 command.Parameters.AddWithValue("@ID", id);
                 command.Parameters.AddWithValue("@Name", device.Name);
                 command.Parameters.AddWithValue("@IsOn", device.IsOn);
 
-                int rowsAffected = command.ExecuteNonQuery();
-
-                if (rowsAffected == 0) return false;
+                if (command.ExecuteNonQuery() == 0) throw new Exception("Failed to update device");
 
                 IDeviceParser? parser = device.GetType().Name switch
                 {
@@ -172,9 +178,16 @@ public class DeviceService : IDeviceService
                     _ => null
                 };
 
-                if (parser == null) return false;
-
-                return parser.UpdateDevice(id, device, connection);
+                if (parser == null || !parser.UpdateDevice(id, device, connection, transaction))
+                    throw new Exception("Failed to update device");
+                
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw;
             }
             finally
             {
@@ -201,19 +214,29 @@ public class DeviceService : IDeviceService
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
-            var command = new SqlCommand(queryDeriveDevice, connection);
-            command.Parameters.AddWithValue("@id", id);
+            using var transaction = connection.BeginTransaction();
 
             try
             {
-                var result = command.ExecuteNonQuery();
-
-                if (result == 0) return false;
-                
-                command = new SqlCommand(queryDevice, connection);
+                var command = new SqlCommand(queryDeriveDevice, connection, transaction);
                 command.Parameters.AddWithValue("@id", id);
+
+                if (command.ExecuteNonQuery() == 0) 
+                    throw new Exception("Failed to delete device");
+
+                command = new SqlCommand(queryDevice, connection, transaction);
+                command.Parameters.AddWithValue("@id", id);
+
+                if (command.ExecuteNonQuery() == 0) 
+                    throw new Exception("Failed to delete device");
                 
-                return command.ExecuteNonQuery() > 0;
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw;
             }
             finally
             {

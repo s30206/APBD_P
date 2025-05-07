@@ -43,14 +43,14 @@ public class EmbeddedDeviceParser : IDeviceParser
         };
     }
 
-    public bool InsertDevice(Device device, SqlConnection conn)
+    public bool InsertDevice(Device device, SqlConnection conn, SqlTransaction transaction)
     {
         EmbeddedDevice dev = (EmbeddedDevice)device;
         string query = "Insert into EmbeddedDevice (ID, Device_ID, IpAddress, NetworkName) values (@ID, @Device_ID, @IpAddress, @NetworkName)";
         
         string queryMax = "select coalesce(max(id), 1) from EmbeddedDevice";
 
-        var command = new SqlCommand(queryMax, conn);
+        var command = new SqlCommand(queryMax, conn, transaction);
         var reader = command.ExecuteReader();
         reader.Read();
         int maxId = reader.GetInt32(0);
@@ -68,12 +68,12 @@ public class EmbeddedDeviceParser : IDeviceParser
         return rowsAffected != 0;
     }
 
-    public bool UpdateDevice(string id, Device device, SqlConnection conn)
+    public bool UpdateDevice(string id, Device device, SqlConnection conn, SqlTransaction transaction)
     {
         EmbeddedDevice dev = (EmbeddedDevice)device;
         string query = "UPDATE EmbeddedDevice set IpAddress = @IpAddress, NetworkName = @NetworkName WHERE Device_ID = @Id";
         
-        var command = new SqlCommand(query, conn);
+        var command = new SqlCommand(query, conn, transaction);
         command.Parameters.AddWithValue("@Id", id);
         command.Parameters.AddWithValue("@IpAddress", dev.IpAddress);
         command.Parameters.AddWithValue("@NetworkName", dev.NetworkName);

@@ -42,14 +42,14 @@ public class SmartwatchParser : IDeviceParser
         };
     }
     
-    public bool InsertDevice(Device device, SqlConnection conn)
+    public bool InsertDevice(Device device, SqlConnection conn, SqlTransaction transaction)
     {
         Smartwatch dev = (Smartwatch)device;
         string query = "Insert into Smartwatch (ID, Device_ID, BatteryPercentage) values (@ID, @Device_ID, @BatteryPercentage)";
         
         string queryMax = "select coalesce(max(id), 1) from PersonalComputer";
 
-        var command = new SqlCommand(queryMax, conn);
+        var command = new SqlCommand(queryMax, conn, transaction);
         var reader = command.ExecuteReader();
         reader.Read();
         int maxId = reader.GetInt32(0);
@@ -66,12 +66,12 @@ public class SmartwatchParser : IDeviceParser
         return rowsAffected != 0;
     }
 
-    public bool UpdateDevice(string id, Device device, SqlConnection conn)
+    public bool UpdateDevice(string id, Device device, SqlConnection conn, SqlTransaction transaction)
     {
         Smartwatch dev = (Smartwatch)device;
         string query = "UPDATE Smartwatch SET BatteryPercentage = @BatteryPercentage WHERE Device_ID = @Id";
         
-        var command = new SqlCommand(query, conn);
+        var command = new SqlCommand(query, conn, transaction);
         command.Parameters.AddWithValue("@Id", id);
         command.Parameters.AddWithValue("@BatteryPercentage", dev.BatteryPercentage);
         

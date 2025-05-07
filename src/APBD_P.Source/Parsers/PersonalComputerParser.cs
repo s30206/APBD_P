@@ -41,14 +41,14 @@ public class PersonalComputerParser : IDeviceParser
         };
     }
 
-    public bool InsertDevice(Device device, SqlConnection conn)
+    public bool InsertDevice(Device device, SqlConnection conn, SqlTransaction transaction)
     {
         PersonalComputer dev = (PersonalComputer)device;
         string query = "Insert into PersonalComputer (ID, Device_ID, OperatingSystem) values (@ID, @Device_ID, @OperatingSystem)";
         
         string queryMax = "select coalesce(max(id), 1) from PersonalComputer";
 
-        var command = new SqlCommand(queryMax, conn);
+        var command = new SqlCommand(queryMax, conn, transaction);
         var reader = command.ExecuteReader();
         reader.Read();
         int maxId = reader.GetInt32(0);
@@ -65,12 +65,12 @@ public class PersonalComputerParser : IDeviceParser
         return rowsAffected != 0;
     }
 
-    public bool UpdateDevice(string id, Device device, SqlConnection conn)
+    public bool UpdateDevice(string id, Device device, SqlConnection conn, SqlTransaction transaction)
     {
         PersonalComputer dev = (PersonalComputer)device;
         string query = "UPDATE PersonalComputer SET OperatingSystem = @OperatingSystem WHERE Device_ID = @Id";
         
-        var command = new SqlCommand(query, conn);
+        var command = new SqlCommand(query, conn, transaction);
         command.Parameters.AddWithValue("@Id", id);
         command.Parameters.AddWithValue("@OperatingSystem", dev.OperatingSystem);
         
