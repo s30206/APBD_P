@@ -55,7 +55,7 @@ public class PersonalComputerParser : IDeviceParser
         reader.Close();
 
         string shortName = "P";
-        command = new SqlCommand(query, conn);
+        command = new SqlCommand(query, conn, transaction);
         command.Parameters.AddWithValue("@ID", maxId);
         command.Parameters.AddWithValue("@Device_ID", $"{shortName}-{dev.Id}");
         command.Parameters.AddWithValue("@OperatingSystem", dev.OperatingSystem);
