@@ -1,8 +1,9 @@
 using System.Text.Json.Nodes;
 using APBD_P.Database.Parsers;
-using APBD_P.Source.DeviceService;
+using APBD_P.Repository;
 using APBD_P.Source.Interfaces;
 using APBD_P.Source.Parsers;
+using APBD_P.Source.Service;
 using APBD_P1;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,7 +18,8 @@ builder.WebHost.ConfigureKestrel(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 
-builder.Services.AddSingleton<IDeviceService, DeviceService>(s => new DeviceService(connectionString));
+builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>(s => new DeviceRepository(connectionString));
+builder.Services.AddSingleton<IDeviceService, DeviceService>();
 
 var app = builder.Build();
 

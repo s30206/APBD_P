@@ -1,16 +1,15 @@
-using APBD_P.Database.Parsers;
-using APBD_P.Source.Interfaces;
+﻿using APBD_P.Database.Parsers;
 using APBD_P.Source.Parsers;
 using APBD_P1;
 using Microsoft.Data.SqlClient;
 
-namespace APBD_P.Source.DeviceService;
+namespace APBD_P.Repository;
 
-public class DeviceService : IDeviceService
+public class DeviceRepository : IDeviceRepository
 {
     private readonly string _connectionString;
 
-    public DeviceService(string connectionString)
+    public DeviceRepository(string connectionString)
     {
         _connectionString = connectionString;
     }
@@ -53,34 +52,24 @@ public class DeviceService : IDeviceService
         }
     }
 
-    public Device? GetDeviceById(string id)
+    public Device? GetDeviceById(string id, string devType)
     {
-        var devType = id.Split('-')[0] switch
-        {
-            "ED" => nameof(EmbeddedDevice),
-            "P" => nameof(PersonalComputer),
-            "SW" => nameof(Smartwatch),
-            _ => null
-        };
-        
-        if (devType == null) return null;
-
         var query = $"SELECT * FROM Device JOIN {devType} d on Device.ID = d.Device_ID WHERE Device.ID = @id";
 
         using (var connection = new SqlConnection(_connectionString))
         {
-            connection.Open();
-            SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@id", id);
-            
-            SqlDataReader reader = command.ExecuteReader();
-
             try
             {
+                connection.Open();
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@id", id);
+                
+                SqlDataReader reader = command.ExecuteReader();
+            
                 if (!reader.HasRows) return null;
 
                 reader.Read();
-
+                
                 IDeviceParser? parser = devType switch
                 {
                     nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
@@ -100,8 +89,6 @@ public class DeviceService : IDeviceService
 
     public bool AddDevice(Device device)
     {
-        if (device == null) return false;
-        
         const string query = "INSERT INTO Device (ID, Name, IsOn) VALUES (@ID, @Name, @IsOn)";
 
         using (var connection = new SqlConnection(_connectionString))
@@ -163,7 +150,7 @@ public class DeviceService : IDeviceService
             
             try
             {
-                SqlCommand command = new SqlCommand(query, connection, transaction);
+                var command = new SqlCommand(query, connection, transaction);
                 command.Parameters.AddWithValue("@ID", id);
                 command.Parameters.AddWithValue("@Name", device.Name);
                 command.Parameters.AddWithValue("@IsOn", device.IsOn);
@@ -196,18 +183,8 @@ public class DeviceService : IDeviceService
         }
     }
 
-    public bool DeleteDevice(string id)
+    public bool DeleteDevice(string id, string devType)
     {
-        var devType = id.Split('-')[0] switch
-        {
-            "ED" => nameof(EmbeddedDevice),
-            "P" => nameof(PersonalComputer),
-            "SW" => nameof(Smartwatch),
-            _ => null
-        };
-        
-        if (devType == null) return false;
-
         var queryDeriveDevice = $"DELETE {devType} WHERE Device_ID = @id";
         var queryDevice = "DELETE FROM Device WHERE ID = @id";
 

@@ -20,4 +20,8 @@
       <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\APBD_P.Models\APBD_P.Models.csproj" />
+    </ItemGroup>
+
 </Project>

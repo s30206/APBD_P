@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\APBD_P.Application\APBD_P.Application.csproj" />
       <ProjectReference Include="..\APBD_P.Console\APBD_P.Console.csproj" />
       <ProjectReference Include="..\APBD_P.Source\APBD_P.Source.csproj" />
     </ItemGroup>

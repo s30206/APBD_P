@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\APBD_P.Repository\APBD_P.Repository.csproj" />
+      <ProjectReference Include="..\APBD_P.Source\APBD_P.Source.csproj" />
+    </ItemGroup>
+
+</Project>
