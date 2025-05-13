@@ -18,7 +18,7 @@ builder.WebHost.ConfigureKestrel(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 
-builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>(s => new DeviceRepository(connectionString));
+builder.Services.AddTransient<IDeviceRepository, DeviceRepository>(s => new DeviceRepository(connectionString));
 builder.Services.AddSingleton<IDeviceService, DeviceService>();
 
 var app = builder.Build();
@@ -72,7 +72,7 @@ app.MapPost("api/devices", async (HttpRequest request, IDeviceService deviceServ
                  * {
                  *   "id": "SW-2",
                  *   "name": "Test",
-                 *   "ison": true,
+                 *   "isEnabled": true,
                  *   "batterypercentage": 88
                  * }
                  */
@@ -138,7 +138,7 @@ app.MapPut("api/devices/{id}", async (string id, HttpRequest request, IDeviceSer
                  * {
                  *   "id": "SW-1",
                  *   "name": "Test",
-                 *   "ison": true,
+                 *   "isEnabled": true,
                  *   "batterypercentage": 5
                  * }
                  */

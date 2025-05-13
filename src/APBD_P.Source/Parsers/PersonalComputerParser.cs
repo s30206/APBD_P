@@ -63,15 +63,54 @@ public class PersonalComputerParser : IDeviceParser
 
     public bool UpdateDevice(string id, Device device, SqlConnection conn, SqlTransaction transaction)
     {
+        var rowVersionQuery =
+            "select device.DeviceVersion as DeviceRaw, s.PCVersion as PCRaw from device join PersonalComputer s on device.ID = s.DeviceID where s.DeviceID = @id";
+
+        byte[] deviceRaw = null;
+        byte[] pcRaw = null;
+        
+        using (var command = new SqlCommand(rowVersionQuery, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@id", id);
+            
+            var reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                deviceRaw = (byte[])reader["DeviceRaw"];
+                pcRaw = (byte[])reader["PCRaw"];
+            }
+            else
+            {
+                throw new Exception("PC not found");
+            }
+            reader.Close();
+        }
+        
         PersonalComputer dev = (PersonalComputer)device;
-        string query = "UPDATE PersonalComputer SET OperationSystem = @OperationSystem WHERE DeviceID = @Id";
+        string updateDevice = "UPDATE Device SET Name = @Name, IsEnabled = @IsEnabled WHERE ID = @ID and DeviceVersion = @DeviceVersion";
+        using (var command = new SqlCommand(updateDevice, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@ID", id);
+            command.Parameters.AddWithValue("@Name", dev.Name);
+            command.Parameters.AddWithValue("@IsEnabled", dev.IsEnabled);
+            command.Parameters.Add("@DeviceVersion", SqlDbType.Timestamp).Value = deviceRaw;
+            
+            if (command.ExecuteNonQuery() == 0)
+                throw new Exception("Device update failed");
+        }
         
-        var command = new SqlCommand(query, conn, transaction);
-        command.Parameters.AddWithValue("@Id", id);
-        command.Parameters.AddWithValue("@OperationSystem", dev.OperationSystem);
-        
-        int rowsAffected = command.ExecuteNonQuery();
-        
-        return rowsAffected != 0;
+        string query = "UPDATE PersonalComputer SET OperationSystem = @OperationSystem WHERE DeviceID = @Id and PCVersion = @PCVersion";
+        using (var command = new SqlCommand(query, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@Id", id);
+            command.Parameters.AddWithValue("@OperationSystem", dev.OperationSystem);
+            command.Parameters.Add("@PCVersion", SqlDbType.Timestamp).Value = pcRaw;
+
+            if (command.ExecuteNonQuery() == 0)
+                throw new Exception("PC update failed");
+        }
+
+        return true;
     }
 }

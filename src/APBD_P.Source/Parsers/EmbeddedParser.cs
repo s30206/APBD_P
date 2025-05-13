@@ -65,16 +65,54 @@ public class EmbeddedParser : IDeviceParser
 
     public bool UpdateDevice(string id, Device device, SqlConnection conn, SqlTransaction transaction)
     {
+        var rowVersionQuery =
+            "select device.DeviceVersion as DeviceRaw, s.EmbeddedVersion as EDRaw from device join Embedded s on device.ID = s.DeviceID where s.DeviceID = @id";
+
+        byte[] deviceRaw = null;
+        byte[] edRaw = null;
+        
+        using (var command = new SqlCommand(rowVersionQuery, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@id", id);
+            
+            var reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                deviceRaw = (byte[])reader["DeviceRaw"];
+                edRaw = (byte[])reader["EDRaw"];
+            }
+            else
+            {
+                throw new Exception("Embedded device not found");
+            }
+            reader.Close();
+        }
+        
         Embedded dev = (Embedded)device;
-        string query = "UPDATE Embedded set IpAddress = @IpAddress, NetworkName = @NetworkName WHERE DeviceID = @Id";
+        string updateDevice = "UPDATE Device SET Name = @Name, IsEnabled = @IsEnabled WHERE ID = @ID and DeviceVersion = @DeviceVersion";
+        using (var command = new SqlCommand(updateDevice, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@ID", id);
+            command.Parameters.AddWithValue("@Name", dev.Name);
+            command.Parameters.AddWithValue("@IsEnabled", dev.IsEnabled);
+            command.Parameters.Add("@DeviceVersion", SqlDbType.Timestamp).Value = deviceRaw;
+            
+            if (command.ExecuteNonQuery() == 0)
+                throw new Exception("Device update failed");
+        }
         
-        var command = new SqlCommand(query, conn, transaction);
-        command.Parameters.AddWithValue("@Id", id);
-        command.Parameters.AddWithValue("@IpAddress", dev.IpAddress);
-        command.Parameters.AddWithValue("@NetworkName", dev.NetworkName);
-        
-        int rowsAffected = command.ExecuteNonQuery();
-        
-        return rowsAffected != 0;
+        string query = "UPDATE Embedded set IpAddress = @IpAddress, NetworkName = @NetworkName WHERE DeviceID = @Id and EmbeddedVersion = @EDVersion";
+        using (var command = new SqlCommand(query, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@Id", id);
+            command.Parameters.AddWithValue("@IpAddress", dev.IpAddress);
+            command.Parameters.AddWithValue("@NetworkName", dev.NetworkName);
+            command.Parameters.Add("EDVersion", SqlDbType.Timestamp).Value = edRaw;
+
+            int rowsAffected = command.ExecuteNonQuery();
+        }
+
+        return true;
     }
 }

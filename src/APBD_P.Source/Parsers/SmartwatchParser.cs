@@ -63,15 +63,54 @@ public class SmartwatchParser : IDeviceParser
 
     public bool UpdateDevice(string id, Device device, SqlConnection conn, SqlTransaction transaction)
     {
+        var rowVersionQuery =
+            "select device.DeviceVersion as DeviceRaw, s.SWVersion as SWRaw from device join Smartwatch s on device.ID = s.DeviceID where s.DeviceID = @id";
+
+        byte[] deviceRaw = null;
+        byte[] swRaw = null;
+        
+        using (var command = new SqlCommand(rowVersionQuery, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@id", id);
+            
+            var reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                deviceRaw = (byte[])reader["DeviceRaw"];
+                swRaw = (byte[])reader["SWRaw"];
+            }
+            else
+            {
+                throw new Exception("Smartwatch not found");
+            }
+            reader.Close();
+        }
+        
         Smartwatch dev = (Smartwatch)device;
-        string query = "UPDATE Smartwatch SET BatteryPercentage = @BatteryPercentage WHERE DeviceID = @Id";
-        
-        var command = new SqlCommand(query, conn, transaction);
-        command.Parameters.AddWithValue("@Id", id);
-        command.Parameters.AddWithValue("@BatteryPercentage", dev.BatteryPercentage);
-        
-        int rowsAffected = command.ExecuteNonQuery();
-        
-        return rowsAffected != 0;
+        string updateDevice = "UPDATE Device SET Name = @Name, IsEnabled = @IsEnabled WHERE ID = @ID and DeviceVersion = @DeviceVersion";
+        using (var command = new SqlCommand(updateDevice, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@ID", id);
+            command.Parameters.AddWithValue("@Name", dev.Name);
+            command.Parameters.AddWithValue("@IsEnabled", dev.IsEnabled);
+            command.Parameters.Add("@DeviceVersion", SqlDbType.Timestamp).Value = deviceRaw;
+            
+            if (command.ExecuteNonQuery() == 0)
+                throw new Exception("Device update failed");
+        }
+
+        string updateSmartwatch = "UPDATE Smartwatch SET BatteryPercentage = @BatteryPercentage WHERE DeviceID = @Id and SWVersion = @SWVersion";
+        using (var command = new SqlCommand(updateSmartwatch, conn, transaction))
+        {
+            command.Parameters.AddWithValue("@BatteryPercentage", dev.BatteryPercentage);
+            command.Parameters.AddWithValue("@Id", id);
+            command.Parameters.Add("@SWVersion", SqlDbType.Timestamp).Value = swRaw;
+            
+            if (command.ExecuteNonQuery() == 0)
+                throw new Exception("Smartwatch update failed");
+        }
+
+        return true;
     }
 }

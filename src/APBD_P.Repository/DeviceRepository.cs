@@ -123,8 +123,6 @@ public class DeviceRepository : IDeviceRepository
 
     public bool UpdateDevice(string id, Device device)
     {
-        string query = "UPDATE Device SET Name = @Name, IsEnabled = @IsEnabled WHERE ID = @ID";
-
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
@@ -132,13 +130,6 @@ public class DeviceRepository : IDeviceRepository
             
             try
             {
-                var command = new SqlCommand(query, connection, transaction);
-                command.Parameters.AddWithValue("@ID", id);
-                command.Parameters.AddWithValue("@Name", device.Name);
-                command.Parameters.AddWithValue("@IsEnabled", device.IsEnabled);
-
-                if (command.ExecuteNonQuery() == 0) throw new Exception("Failed to update device");
-
                 IDeviceParser? parser = device.GetType().Name switch
                 {
                     nameof(Embedded) => new EmbeddedParser(),
