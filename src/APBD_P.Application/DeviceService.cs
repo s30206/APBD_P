@@ -23,7 +23,7 @@ public class DeviceService : IDeviceService
     {
         var devType = id.Split('-')[0] switch
         {
-            "ED" => nameof(EmbeddedDevice),
+            "ED" => nameof(Embedded),
             "P" => nameof(PersonalComputer),
             "SW" => nameof(Smartwatch),
             _ => null
@@ -53,7 +53,7 @@ public class DeviceService : IDeviceService
     {
         var devType = id.Split('-')[0] switch
         {
-            "ED" => nameof(EmbeddedDevice),
+            "ED" => nameof(Embedded),
             "P" => nameof(PersonalComputer),
             "SW" => nameof(Smartwatch),
             _ => null

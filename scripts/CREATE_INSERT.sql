@@ -1,67 +1,64 @@
 ﻿-- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2025-04-25 09:04:21.695
+-- Last modification date: 2025-05-13 12:57:05.546
 
 -- tables
 -- Table: Device
 CREATE TABLE Device (
                         ID varchar(250)  NOT NULL,
                         Name varchar(250)  NOT NULL,
-                        IsOn bit  NOT NULL,
+                        IsEnabled bit  NOT NULL,
+                        DeviceVersion rowversion  NOT NULL,
                         CONSTRAINT Device_pk PRIMARY KEY  (ID)
 );
 
--- Table: EmbeddedDevice
-CREATE TABLE EmbeddedDevice (
-                                ID int  NOT NULL,
-                                Device_ID varchar(250)  NOT NULL,
-                                IpAddress varchar(250)  NOT NULL,
-                                NetworkName varchar(250)  NOT NULL,
-                                CONSTRAINT EmbeddedDevice_pk PRIMARY KEY  (ID,Device_ID)
+-- Table: Embedded
+CREATE TABLE Embedded (
+                          ID int  NOT NULL IDENTITY(1, 1),
+                          IpAddress varchar(250)  NOT NULL,
+                          NetworkName varchar(250)  NOT NULL,
+                          EmbeddedVersion rowversion  NOT NULL,
+                          DeviceID varchar(250)  NOT NULL,
+                          CONSTRAINT Embedded_pk PRIMARY KEY  (ID,DeviceID)
 );
 
 -- Table: PersonalComputer
 CREATE TABLE PersonalComputer (
-                                  ID int  NOT NULL,
-                                  Device_ID varchar(250)  NOT NULL,
-                                  OperatingSystem varchar(250)  NOT NULL,
-                                  CONSTRAINT PersonalComputer_pk PRIMARY KEY  (ID,Device_ID)
+                                  ID int  NOT NULL IDENTITY(1, 1),
+                                  OperationSystem varchar(250)  NOT NULL,
+                                  PCVersion rowversion  NOT NULL,
+                                  DeviceID varchar(250)  NOT NULL,
+                                  CONSTRAINT PersonalComputer_pk PRIMARY KEY  (DeviceID,ID)
 );
 
 -- Table: Smartwatch
 CREATE TABLE Smartwatch (
-                            ID int  NOT NULL,
-                            Device_ID varchar(250)  NOT NULL,
+                            ID int  NOT NULL IDENTITY(1, 1),
                             BatteryPercentage int  NOT NULL,
-                            CONSTRAINT Smartwatch_pk PRIMARY KEY  (ID,Device_ID)
+                            SWVersion rowversion  NOT NULL,
+                            DeviceID varchar(250)  NOT NULL,
+                            CONSTRAINT Smartwatch_pk PRIMARY KEY  (DeviceID,ID)
 );
 
 -- foreign keys
--- Reference: Table_2_Device (table: EmbeddedDevice)
-ALTER TABLE EmbeddedDevice ADD CONSTRAINT Table_2_Device
-    FOREIGN KEY (Device_ID)
-    REFERENCES Device (ID);
+-- Reference: Table_2_Device (table: Embedded)
+ALTER TABLE Embedded ADD CONSTRAINT Table_2_Device
+    FOREIGN KEY (DeviceID)
+        REFERENCES Device (ID);
 
 -- Reference: Table_3_Device (table: PersonalComputer)
 ALTER TABLE PersonalComputer ADD CONSTRAINT Table_3_Device
-    FOREIGN KEY (Device_ID)
-    REFERENCES Device (ID);
+    FOREIGN KEY (DeviceID)
+        REFERENCES Device (ID);
 
 -- Reference: Table_4_Device (table: Smartwatch)
 ALTER TABLE Smartwatch ADD CONSTRAINT Table_4_Device
-    FOREIGN KEY (Device_ID)
-    REFERENCES Device (ID);
+    FOREIGN KEY (DeviceID)
+        REFERENCES Device (ID);
 
 -- End of file.
 
-INSERT INTO Device (ID, Name, IsOn) VALUES ('ED-1', 'Raspberry Pi 4', 1);
-INSERT INTO Device (ID, Name, IsOn) VALUES ('P-1', 'Dell Laptop', 0);
-INSERT INTO Device (ID, Name, IsOn) VALUES ('SW-1', 'Apple Watch', 1);
 
-INSERT INTO EmbeddedDevice (ID, Device_ID, IpAddress, NetworkName) VALUES
-    (1, 'ED-1', '192.168.1.10', 'MD Ltd.HomeNetwork');
 
-INSERT INTO PersonalComputer (ID, Device_ID, OperatingSystem) VALUES
-    (1, 'P-1', 'Windows 11');
-
-INSERT INTO Smartwatch (ID, Device_ID, BatteryPercentage) VALUES
-    (1, 'SW-1', 87);
+exec AddEmbedded @DeviceId = 'ED-1', @Name = 'Raspberry Pi 4', @IsEnabled = 1, @IpAddress = '192.168.1.10', @NetworkName = 'MD Ltd.HomeNetwork';
+exec AddPersonalComputer @DeviceId = 'P-1', @Name = 'Dell Laptop', @IsEnabled = 0, @OperationSystem = 'Windows 11';
+exec AddSmartwatch @DeviceId = 'SW-1', @Name = 'Apple Watch', @IsEnabled = 1, @BatteryPercentage = 87;

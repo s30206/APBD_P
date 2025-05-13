@@ -148,7 +148,7 @@ app.MapPut("api/devices/{id}", async (string id, HttpRequest request, IDeviceSer
 
                 string? shortName = result.GetType().Name switch
                 {
-                    nameof(EmbeddedDevice) => $"ED-{result.Id}",
+                    nameof(Embedded) => $"ED-{result.Id}",
                     nameof(PersonalComputer) => $"P-{result.Id}",
                     nameof(Smartwatch) => $"SW-{result.Id}",
                     _ => null
@@ -185,7 +185,7 @@ app.MapPut("api/devices/{id}", async (string id, HttpRequest request, IDeviceSer
                 
                 string? shortName = result.GetType().Name switch
                 {
-                    nameof(EmbeddedDevice) => $"ED-{result.Id}",
+                    nameof(Embedded) => $"ED-{result.Id}",
                     nameof(PersonalComputer) => $"P-{result.Id}",
                     nameof(Smartwatch) => $"SW-{result.Id}",
                     _ => null
@@ -238,7 +238,7 @@ IDeviceParser? GetDeviceParser(string deviceId)
 {
     return deviceId switch
     {
-        "ED" => new EmbeddedDeviceParser(),
+        "ED" => new EmbeddedParser(),
         "P" => new PersonalComputerParser(),
         "SW" => new SmartwatchParser(),
         _ => null

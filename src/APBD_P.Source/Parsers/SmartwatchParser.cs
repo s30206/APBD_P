@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Data;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using APBD_P.Source.Parsers;
 using APBD_P1;
@@ -19,7 +20,7 @@ public class SmartwatchParser : IDeviceParser
         {
             Id = int.Parse(reader.GetString(0).Split("-")[1]),
             Name = reader.GetString(1),
-            IsOn = reader.GetBoolean(2),
+            IsEnabled = reader.GetBoolean(2),
             BatteryPercentage = reader.GetInt32(5)
         };
 
@@ -37,7 +38,7 @@ public class SmartwatchParser : IDeviceParser
         {
             Id = Int32.Parse(parts[0].Trim().Split("-")[1]),
             Name = parts[1].Trim(),
-            IsOn = bool.Parse(parts[2].Trim()),
+            IsEnabled = bool.Parse(parts[2].Trim()),
             BatteryPercentage = Int32.Parse(parts[3].Trim())
         };
     }
@@ -45,20 +46,14 @@ public class SmartwatchParser : IDeviceParser
     public bool InsertDevice(Device device, SqlConnection conn, SqlTransaction transaction)
     {
         Smartwatch dev = (Smartwatch)device;
-        string query = "Insert into Smartwatch (ID, Device_ID, BatteryPercentage) values (@ID, @Device_ID, @BatteryPercentage)";
         
-        string queryMax = "select coalesce(max(id), 1) from PersonalComputer";
-
-        var command = new SqlCommand(queryMax, conn, transaction);
-        var reader = command.ExecuteReader();
-        reader.Read();
-        int maxId = reader.GetInt32(0);
-        reader.Close();
-
         string shortName = "SW";
-        command = new SqlCommand(query, conn, transaction);
-        command.Parameters.AddWithValue("@ID", maxId);
-        command.Parameters.AddWithValue("@Device_ID", $"{shortName}-{dev.Id}");
+        var command = new SqlCommand("AddSmartwatch", conn, transaction);
+        command.CommandType = CommandType.StoredProcedure;
+        
+        command.Parameters.AddWithValue("@DeviceID", $"{shortName}-{dev.Id}");
+        command.Parameters.AddWithValue("@Name", device.Name);
+        command.Parameters.AddWithValue("@IsEnabled", dev.IsEnabled);
         command.Parameters.AddWithValue("@BatteryPercentage", dev.BatteryPercentage);
         
         int rowsAffected = command.ExecuteNonQuery();
@@ -69,7 +64,7 @@ public class SmartwatchParser : IDeviceParser
     public bool UpdateDevice(string id, Device device, SqlConnection conn, SqlTransaction transaction)
     {
         Smartwatch dev = (Smartwatch)device;
-        string query = "UPDATE Smartwatch SET BatteryPercentage = @BatteryPercentage WHERE Device_ID = @Id";
+        string query = "UPDATE Smartwatch SET BatteryPercentage = @BatteryPercentage WHERE DeviceID = @Id";
         
         var command = new SqlCommand(query, conn, transaction);
         command.Parameters.AddWithValue("@Id", id);

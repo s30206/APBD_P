@@ -54,7 +54,7 @@ public class DeviceRepository : IDeviceRepository
 
     public Device? GetDeviceById(string id, string devType)
     {
-        var query = $"SELECT * FROM Device JOIN {devType} d on Device.ID = d.Device_ID WHERE Device.ID = @id";
+        var query = $"SELECT * FROM Device JOIN {devType} d on Device.ID = d.DeviceID WHERE Device.ID = @id";
 
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -72,7 +72,7 @@ public class DeviceRepository : IDeviceRepository
                 
                 IDeviceParser? parser = devType switch
                 {
-                    nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
+                    nameof(Embedded) => new EmbeddedParser(),
                     nameof(PersonalComputer) => new PersonalComputerParser(),
                     nameof(Smartwatch) => new SmartwatchParser(),
                     _ => null
@@ -89,33 +89,15 @@ public class DeviceRepository : IDeviceRepository
 
     public bool AddDevice(Device device)
     {
-        const string query = "INSERT INTO Device (ID, Name, IsOn) VALUES (@ID, @Name, @IsOn)";
-
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
             using var transaction = connection.BeginTransaction();
             try
             {
-                SqlCommand command = new SqlCommand(query, connection, transaction);
-
-                string? shortName = device.GetType().Name switch
-                {
-                    nameof(EmbeddedDevice) => "ED",
-                    nameof(PersonalComputer) => "P",
-                    nameof(Smartwatch) => "SW",
-                    _ => null
-                };
-
-                command.Parameters.AddWithValue("@ID", $"{shortName}-{device.Id}");
-                command.Parameters.AddWithValue("@Name", device.Name);
-                command.Parameters.AddWithValue("@IsOn", device.IsOn);
-
-                if (command.ExecuteNonQuery() == 0) throw new Exception("Failed to add device");
-
                 IDeviceParser? parser = device.GetType().Name switch
                 {
-                    nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
+                    nameof(Embedded) => new EmbeddedParser(),
                     nameof(PersonalComputer) => new PersonalComputerParser(),
                     nameof(Smartwatch) => new SmartwatchParser(),
                     _ => null
@@ -141,7 +123,7 @@ public class DeviceRepository : IDeviceRepository
 
     public bool UpdateDevice(string id, Device device)
     {
-        string query = "UPDATE Device SET Name = @Name, IsOn = @IsOn WHERE ID = @ID";
+        string query = "UPDATE Device SET Name = @Name, IsEnabled = @IsEnabled WHERE ID = @ID";
 
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -153,13 +135,13 @@ public class DeviceRepository : IDeviceRepository
                 var command = new SqlCommand(query, connection, transaction);
                 command.Parameters.AddWithValue("@ID", id);
                 command.Parameters.AddWithValue("@Name", device.Name);
-                command.Parameters.AddWithValue("@IsOn", device.IsOn);
+                command.Parameters.AddWithValue("@IsEnabled", device.IsEnabled);
 
                 if (command.ExecuteNonQuery() == 0) throw new Exception("Failed to update device");
 
                 IDeviceParser? parser = device.GetType().Name switch
                 {
-                    nameof(EmbeddedDevice) => new EmbeddedDeviceParser(),
+                    nameof(Embedded) => new EmbeddedParser(),
                     nameof(PersonalComputer) => new PersonalComputerParser(),
                     nameof(Smartwatch) => new SmartwatchParser(),
                     _ => null
@@ -185,7 +167,7 @@ public class DeviceRepository : IDeviceRepository
 
     public bool DeleteDevice(string id, string devType)
     {
-        var queryDeriveDevice = $"DELETE {devType} WHERE Device_ID = @id";
+        var queryDeriveDevice = $"DELETE {devType} WHERE DeviceID = @id";
         var queryDevice = "DELETE FROM Device WHERE ID = @id";
 
         using (var connection = new SqlConnection(_connectionString))

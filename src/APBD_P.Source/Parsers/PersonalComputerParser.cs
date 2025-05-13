@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Data;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using APBD_P.Source.Parsers;
 using APBD_P1;
@@ -19,8 +20,8 @@ public class PersonalComputerParser : IDeviceParser
         {
             Id = int.Parse(reader.GetString(0).Split("-")[1]),
             Name = reader.GetString(1),
-            IsOn = reader.GetBoolean(2),
-            OperatingSystem = reader.GetString(5)
+            IsEnabled = reader.GetBoolean(2),
+            OperationSystem = reader.GetString(5)
         };
     }
 
@@ -36,29 +37,24 @@ public class PersonalComputerParser : IDeviceParser
         {
             Id = Int32.Parse(parts[0].Trim().Split("-")[1]),
             Name = parts[1].Trim(),
-            IsOn = bool.Parse(parts[2].Trim()),
-            OperatingSystem = parts[3].Trim()
+            IsEnabled = bool.Parse(parts[2].Trim()),
+            OperationSystem = parts[3].Trim()
         };
     }
 
     public bool InsertDevice(Device device, SqlConnection conn, SqlTransaction transaction)
     {
         PersonalComputer dev = (PersonalComputer)device;
-        string query = "Insert into PersonalComputer (ID, Device_ID, OperatingSystem) values (@ID, @Device_ID, @OperatingSystem)";
-        
-        string queryMax = "select coalesce(max(id), 1) from PersonalComputer";
-
-        var command = new SqlCommand(queryMax, conn, transaction);
-        var reader = command.ExecuteReader();
-        reader.Read();
-        int maxId = reader.GetInt32(0);
-        reader.Close();
 
         string shortName = "P";
-        command = new SqlCommand(query, conn, transaction);
-        command.Parameters.AddWithValue("@ID", maxId);
-        command.Parameters.AddWithValue("@Device_ID", $"{shortName}-{dev.Id}");
-        command.Parameters.AddWithValue("@OperatingSystem", dev.OperatingSystem);
+        
+        var command = new SqlCommand("AddPersonalComputer", conn, transaction);
+        command.CommandType = CommandType.StoredProcedure;
+        
+        command.Parameters.AddWithValue("@DeviceID", $"{shortName}-{dev.Id}");
+        command.Parameters.AddWithValue("@Name", device.Name);
+        command.Parameters.AddWithValue("@IsEnabled", dev.IsEnabled);
+        command.Parameters.AddWithValue("@OperationSystem", dev.OperationSystem);
         
         int rowsAffected = command.ExecuteNonQuery();
         
@@ -68,11 +64,11 @@ public class PersonalComputerParser : IDeviceParser
     public bool UpdateDevice(string id, Device device, SqlConnection conn, SqlTransaction transaction)
     {
         PersonalComputer dev = (PersonalComputer)device;
-        string query = "UPDATE PersonalComputer SET OperatingSystem = @OperatingSystem WHERE Device_ID = @Id";
+        string query = "UPDATE PersonalComputer SET OperationSystem = @OperationSystem WHERE DeviceID = @Id";
         
         var command = new SqlCommand(query, conn, transaction);
         command.Parameters.AddWithValue("@Id", id);
-        command.Parameters.AddWithValue("@OperatingSystem", dev.OperatingSystem);
+        command.Parameters.AddWithValue("@OperationSystem", dev.OperationSystem);
         
         int rowsAffected = command.ExecuteNonQuery();
         

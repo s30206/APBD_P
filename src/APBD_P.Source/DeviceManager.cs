@@ -28,7 +28,7 @@ public class DeviceManager : IDeviceManager
                         var sw = new Smartwatch();
                         sw.Id = int.Parse(device[1]);
                         sw.Name = parts[1];
-                        sw.IsOn = bool.Parse(parts[2]);
+                        sw.IsEnabled = bool.Parse(parts[2]);
                         sw.BatteryPercentage = int.Parse(parts[3].Remove(parts[3].Length - 1));
                         Devices.Add(sw);
                     }
@@ -40,8 +40,8 @@ public class DeviceManager : IDeviceManager
                         var p = new PersonalComputer();
                         p.Id = int.Parse(device[1]);
                         p.Name = parts[1];
-                        p.IsOn = bool.Parse(parts[2]);
-                        p.OperatingSystem = parts.Length == 3 ? "" : parts[3];
+                        p.IsEnabled = bool.Parse(parts[2]);
+                        p.OperationSystem = parts.Length == 3 ? "" : parts[3];
                         Devices.Add(p);
                     }
                 }
@@ -49,7 +49,7 @@ public class DeviceManager : IDeviceManager
                 {
                     if (parts.Length == 4)
                     {
-                        var ed = new EmbeddedDevice();
+                        var ed = new Embedded();
                         ed.Id = int.Parse(device[1]);
                         ed.Name = parts[1];
                         ed.IpAddress = parts[2];
@@ -134,18 +134,18 @@ public class DeviceManager : IDeviceManager
             if (device is Smartwatch sw1 && newDevice is Smartwatch sw2)
             {
                 sw1.Name = sw2.Name;
-                sw1.IsOn = sw2.IsOn;
+                sw1.IsEnabled = sw2.IsEnabled;
                 sw1.BatteryPercentage = sw2.BatteryPercentage;
                 return true;
             }
             if (device is PersonalComputer p1 && newDevice is PersonalComputer p2)
             {
                 p1.Name = p2.Name;
-                p1.IsOn = p2.IsOn;
-                p1.OperatingSystem = p2.OperatingSystem;
+                p1.IsEnabled = p2.IsEnabled;
+                p1.OperationSystem = p2.OperationSystem;
                 return true;
             }
-            if (device is EmbeddedDevice ed1 && newDevice is EmbeddedDevice ed2)
+            if (device is Embedded ed1 && newDevice is Embedded ed2)
             {
                 ed1.Name = ed2.Name;
                 ed1.IpAddress = ed2.IpAddress;
@@ -172,16 +172,16 @@ public class DeviceManager : IDeviceManager
             {
                 if (device is Smartwatch sw)
                 {
-                    lines.Add($"SW-{sw.Id},{sw.Name},{sw.IsOn},{sw.BatteryPercentage}%");
+                    lines.Add($"SW-{sw.Id},{sw.Name},{sw.IsEnabled},{sw.BatteryPercentage}%");
                 }
                 else if (device is PersonalComputer pc)
                 {
-                    string pcData = string.IsNullOrEmpty(pc.OperatingSystem) 
-                        ? $"P-{pc.Id},{pc.Name},{pc.IsOn}"
-                        : $"P-{pc.Id},{pc.Name},{pc.IsOn},{pc.OperatingSystem}";
+                    string pcData = string.IsNullOrEmpty(pc.OperationSystem) 
+                        ? $"P-{pc.Id},{pc.Name},{pc.IsEnabled}"
+                        : $"P-{pc.Id},{pc.Name},{pc.IsEnabled},{pc.OperationSystem}";
                     lines.Add(pcData);
                 }
-                else if (device is EmbeddedDevice ed)
+                else if (device is Embedded ed)
                 {
                     lines.Add($"ED-{ed.Id},{ed.Name},{ed.IpAddress},{ed.NetworkName}");
                 }

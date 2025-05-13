@@ -1,7 +1,7 @@
 CREATE PROCEDURE AddEmbedded
     @DeviceId VARCHAR(50),
     @Name NVARCHAR(100),
-    @IsOn BIT,
+    @IsEnabled BIT,
     @IpAddress VARCHAR(50),
     @NetworkName VARCHAR(100)
 AS
@@ -12,11 +12,11 @@ BEGIN
         BEGIN TRANSACTION;
 
         -- Insert into Device table
-        INSERT INTO Device (Id, Name, IsOn)
-        VALUES (@DeviceId, @Name, @IsOn);
+        INSERT INTO Device (Id, Name, IsEnabled)
+        VALUES (@DeviceId, @Name, @IsEnabled);
 
         -- Insert into Embedded table
-        INSERT INTO EmbeddedDevice (IpAddress, NetworkName, Device_Id)
+        INSERT INTO Embedded (IpAddress, NetworkName, DeviceId)
         VALUES (@IpAddress, @NetworkName, @DeviceId);
 
         COMMIT TRANSACTION;
@@ -25,24 +25,64 @@ BEGIN
         ROLLBACK TRANSACTION;
         THROW;
     END CATCH
-END
+END;
+
+    
 
 CREATE PROCEDURE AddSmartwatch
-    @ID INT,
-    @Device_ID NVARCHAR(50),
+    @DeviceId VARCHAR(50),
+    @Name NVARCHAR(100),
+    @IsEnabled BIT,
     @BatteryPercentage INT
 AS
 BEGIN
-    INSERT INTO Smartwatch (ID, Device_ID, BatteryPercentage)
-    VALUES (@ID, @Device_ID, @BatteryPercentage);
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Insert into Device table
+        INSERT INTO Device (Id, Name, IsEnabled)
+        VALUES (@DeviceId, @Name, @IsEnabled);
+
+        -- Insert into Smartwatch table
+        INSERT INTO Smartwatch (BatteryPercentage, DeviceId)
+        VALUES (@BatteryPercentage, @DeviceId);
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 
+
+
 CREATE PROCEDURE AddPersonalComputer
-    @ID INT,
-    @Device_ID NVARCHAR(50),
-    @OperatingSystem NVARCHAR(100)
+    @DeviceId VARCHAR(50),
+    @Name NVARCHAR(100),
+    @IsEnabled BIT,
+    @OperationSystem VARCHAR(50)
 AS
 BEGIN
-    INSERT INTO PersonalComputer (ID, Device_ID, OperatingSystem)
-    VALUES (@ID, @Device_ID, @OperatingSystem);
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Insert into Device table
+        INSERT INTO Device (Id, Name, IsEnabled)
+        VALUES (@DeviceId, @Name, @IsEnabled);
+
+        -- Insert into PersonalComputer table
+        INSERT INTO PersonalComputer (OperationSystem, DeviceId)
+        VALUES (@OperationSystem, @DeviceId);
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;

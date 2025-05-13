@@ -26,10 +26,10 @@ public class DeviceManagerTest
         IDeviceManager manager = DeviceManagerFactory.CreateDeviceManager(_inputPath);
         
         manager.TurnOnDevice(manager.Devices[0]);
-        Assert.True(manager.Devices[0].IsOn);
+        Assert.True(manager.Devices[0].IsEnabled);
         
         manager.TurnOffDevice(manager.Devices[0]);
-        Assert.False(manager.Devices[0].IsOn);
+        Assert.False(manager.Devices[0].IsEnabled);
     }
     
     [Fact]
@@ -61,11 +61,11 @@ public class DeviceManagerTest
         
         var sw = new Smartwatch();
         sw.Name = "Watch1";
-        sw.IsOn = true;
+        sw.IsEnabled = true;
         sw.BatteryPercentage = 100;
 
         Assert.NotEqual(sw.Name, manSw.Name);
-        Assert.NotEqual(sw.IsOn, manSw.IsOn);
+        Assert.NotEqual(sw.IsEnabled, manSw.IsEnabled);
         Assert.NotEqual(sw.BatteryPercentage, manSw.BatteryPercentage);
         
         manager.EditData(manSw, sw);
@@ -73,7 +73,7 @@ public class DeviceManagerTest
         manSw = (Smartwatch) manager.Devices[0];
         
         Assert.Equal(sw.Name, manSw.Name);
-        Assert.Equal(sw.IsOn, manSw.IsOn);
+        Assert.Equal(sw.IsEnabled, manSw.IsEnabled);
         Assert.Equal(sw.BatteryPercentage, manSw.BatteryPercentage);
     }
     

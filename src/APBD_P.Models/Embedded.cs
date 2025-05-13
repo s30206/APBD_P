@@ -2,7 +2,7 @@
 
 namespace APBD_P1;
 
-public class EmbeddedDevice : Device
+public class Embedded : Device
 {
     public static Regex IpRegex = new Regex(@"^([0-9]{1,3}\.){3}[0-9]{1,3}$");
     
@@ -28,24 +28,24 @@ public class EmbeddedDevice : Device
 
     public override void TurnOn()
     {
-        if (IsOn)
+        if (IsEnabled)
             return;
         Connect();
-        IsOn = true;
+        IsEnabled = true;
     }
 
-    public EmbeddedDevice()
+    public Embedded()
     {
         
     }
 
-    public EmbeddedDevice(int Id, string Name, bool IsOn, string IpAddress, string NetworkName) : base(Id, Name, IsOn)
+    public Embedded(int Id, string Name, bool isEnabled, string IpAddress, string NetworkName) : base(Id, Name, isEnabled)
     {
         IpAddress = IpAddress;
         NetworkName = NetworkName;
     }
 
     public override string ToString() => 
-        $"Embedded device: ID: {Id},\nName:{Name},\nIP address: {IpAddress},\nNetwork name: {NetworkName},\nIsOn:{IsOn}";
+        $"Embedded device: ID: {Id},\nName:{Name},\nIP address: {IpAddress},\nNetwork name: {NetworkName},\nIsOn:{IsEnabled}";
 }
 
